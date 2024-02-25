@@ -1,0 +1,37 @@
+:root {
+  font-family: 'gg sans', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+
+  --primary-background: 	#313338;
+  --secondary-background: #2b2d31;
+  --discord-dark: #1e1f22;
+  --discord-darker: #111214;
+  --blurple: #5865F2;
+  --green: #219c55;
+  --yellow: #FEE75C;
+  --red: #f23f42;
+  --fuchsia: #EB459E;
+  --text-primary: #f2f3f5;
+  --secondary-text: #b3b5b9;
+  --white: #ffffff;
+  --black: #000000;
+
+  color: var(--primary-background);
+  background-color: var(--white);
+
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.emoji {
+  font-family: 'emoji';
+}

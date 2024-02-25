@@ -1,8 +1,10 @@
-use leptos::leptos_dom::ev::SubmitEvent;
+use std::time::Duration;
+
 use leptos::*;
-use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::to_value;
+use rustcord_lib::discord::{Channel, Discord, Guild, GuildMinimal, User};
 use wasm_bindgen::prelude::*;
+use crate::components::screens::login::LoginScreen;
+use crate::components::screens::discord::DiscordScreen;
 
 #[wasm_bindgen]
 extern "C" {
@@ -10,68 +12,146 @@ extern "C" {
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
 
-#[derive(Serialize, Deserialize)]
-struct GreetArgs<'a> {
-    name: &'a str,
+#[derive(Clone, Debug)]
+pub struct AppState {
+    pub screen: Screen,
+    pub active_guild_id: String,
+    pub active_channel_id: String,
 }
+
+impl AppState {
+    pub fn new() -> Self {
+        Self {
+            screen: Screen::LOADING,
+            active_guild_id: String::from("HOME"),
+            active_channel_id: String::new(),
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub enum Screen {
+    LOADING,
+    DISCORD,
+    LOGIN,
+}
+
+const OFFLINE_MODE: bool = false;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (name, set_name) = create_signal(String::new());
-    let (greet_msg, set_greet_msg) = create_signal(String::new());
+    let (state, set_state) = create_signal(AppState::new());
+    let (discord, set_discord) = create_signal(Discord::new());
 
-    let update_name = move |ev| {
-        let v = event_target_value(&ev);
-        set_name.set(v);
-    };
+    if OFFLINE_MODE {
+        let mut debug_state = state.clone().get();
+        debug_state.screen = Screen::DISCORD;
+        set_state.set(debug_state);
 
-    let greet = move |ev: SubmitEvent| {
-        ev.prevent_default();
-        spawn_local(async move {
-            let name = name.get_untracked();
-            if name.is_empty() {
-                return;
+        let mut debug_discord = discord.clone().get();
+        debug_discord.token = String::from("DEV_TOKEN");
+        debug_discord.settings = Default::default();
+        debug_discord.user = User {
+            id: String::from("86234872634876783"),
+            email: Some(String::from("dev@example.com")),
+            global_name: Some(String::from("debug_user")),
+            username: String::from("DEBUG USER"),
+            discriminator: String::from("0"),
+            bio: String::from("DEBUG BIO"),
+            verified: true,
+            mfa_enabled: false,
+            flags: 73248,
+            premium_type: 0,
+            public_flags: 3294234,
+            ..Default::default()
+        };
+        debug_discord.guilds_minimal = vec![
+            GuildMinimal {
+                id: String::from("987346598763457"),
+                name: String::from("DEBUG SERVER 1"),
+                owner: true,
+                icon: None,
+                permissions: String::new(),
+                features: vec![]
+            }
+        ];
+        debug_discord.guilds = vec![
+            Guild {
+                id: String::from("987346598763457"),
+                name: String::from("DEBUG SERVER 1"),
+                channels: Some(vec![
+                    Channel {
+                        id: String::from("1234567890"),
+                        guild_id: String::from("987346598763457"),
+                        r#type: 4,
+                        name: String::from("cool channels"),
+                        position: 1,
+                        parent_id: None,
+                        ..Default::default()
+                    },
+                    Channel {
+                        id: String::from("1234563242437890"),
+                        guild_id: String::from("987346598763457"),
+                        r#type: 0,
+                        name: String::from("general"),
+                        position: 4,
+                        parent_id: Some(String::from("1234567890")),
+                        ..Default::default()
+                    },
+                    Channel {
+                        id: String::from("123456234247890"),
+                        guild_id: String::from("987346598763457"),
+                        r#type: 2,
+                        name: String::from("general voice"),
+                        position: 5,
+                        parent_id: Some(String::from("1234567890")),
+                        ..Default::default()
+                    },
+                    Channel {
+                        id: String::from("12343242456234247890"),
+                        guild_id: String::from("987346598763457"),
+                        r#type: 0,
+                        name: String::from("general FFF"),
+                        position: 10,
+                        parent_id: None,
+                        ..Default::default()
+                    }
+                ]),
+                ..Default::default()
+            }
+        ];
+        set_discord.set(debug_discord);
+    }
+
+    set_timeout(move || {
+        if OFFLINE_MODE { return; } 
+        let mut state = state.get();
+        state.screen = Screen::LOGIN;
+        set_state.set(state);
+    }, Duration::from_secs(1));
+    
+    view! {
+        <main class="app">
+            {move || match state.get().screen {
+                Screen::LOADING => view! { <p>"Loading..."</p> }.into_view(),
+                Screen::DISCORD => view! { <DiscordScreen state=state set_state=set_state discord=discord set_discord=set_discord /> }.into_view(),
+                Screen::LOGIN => view! { <LoginScreen state=state set_state=set_state discord=discord set_discord=set_discord /> }.into_view(),
+            }}
+        </main>
+
+        <style>"
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
 
-            let args = to_value(&GreetArgs { name: &name }).unwrap();
-            // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-            let new_msg = invoke("greet", args).await.as_string().unwrap();
-            set_greet_msg.set(new_msg);
-        });
-    };
-
-    view! {
-        <main class="container">
-            <div class="row">
-                <a href="https://tauri.app" target="_blank">
-                    <img src="public/tauri.svg" class="logo tauri" alt="Tauri logo"/>
-                </a>
-                <a href="https://docs.rs/leptos/" target="_blank">
-                    <img src="public/leptos.svg" class="logo leptos" alt="Leptos logo"/>
-                </a>
-            </div>
-
-            <p>"Click on the Tauri and Leptos logos to learn more."</p>
-
-            <p>
-                "Recommended IDE setup: "
-                <a href="https://code.visualstudio.com/" target="_blank">"VS Code"</a>
-                " + "
-                <a href="https://github.com/tauri-apps/tauri-vscode" target="_blank">"Tauri"</a>
-                " + "
-                <a href="https://github.com/rust-lang/rust-analyzer" target="_blank">"rust-analyzer"</a>
-            </p>
-
-            <form class="row" on:submit=greet>
-                <input
-                    id="greet-input"
-                    placeholder="Enter a name..."
-                    on:input=update_name
-                />
-                <button type="submit">"Greet"</button>
-            </form>
-
-            <p><b>{ move || greet_msg.get() }</b></p>
-        </main>
+            .app {
+                height: 100vh;
+                width: 100vw;
+                background-color: var(--primary-background);
+                color: var(--primary-text);
+            }
+        "</style>
     }
 }
