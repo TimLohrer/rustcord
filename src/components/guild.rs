@@ -136,22 +136,14 @@ pub fn Guild(
                 background-color: var(--discord-dark);
                 color: var(--discord-light);
                 padding: 0 15px;
+                top: 0;
+                position: sticky;
+                border-shadow: 0 1px 0 rgba(0,0,0,.2);
             }
             
             .guild > .guildChannels {
                 display: flex;
                 flex-direction: column;
-            }
-
-            .channel {
-                display: flex;
-                align-items: center;
-                text-align: left;
-                padding: 3px;
-                height: 35px;
-                border-radius: 5px;
-                padding: 2.5px 2.5px 2.5px 10px;
-                cursor: pointer;
             }
             
         "</style>

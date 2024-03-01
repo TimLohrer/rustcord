@@ -1060,8 +1060,8 @@ pub struct Sticker {
 	pub tags: String,
 	pub r#type: i32,
 	pub format_type: i32,
-	pub description: String,
-	pub asset: String,
+	pub description: Option<String>,
+	pub asset: Option<String>,
 	pub available: bool,
 	pub guild_id: String
 }

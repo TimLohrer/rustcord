@@ -27,8 +27,11 @@ pub fn CategoryChannel(
     };
 
     view! {
-       <div class={"categoryChannel"} on:click={move |_| toggle_show_children()}>
-            <p>{channel.name}</p>
+        <div class={"categoryChannel"} on:click={move |_| toggle_show_children()}>
+            <div class="categoryChannelTitle">
+                <svg class={move || format!("{}", if show_children.get() {"open"} else {"closed"})} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5.3 9.3a1 1 0 0 1 1.4 0l5.3 5.29 5.3-5.3a1 1 0 1 1 1.4 1.42l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.42Z"></path></svg>
+                <p>{channel.name}</p>
+            </div>
             {move || if show_children.get() {
                 {channel.children.as_ref().unwrap().into_iter().map(|child| {
                     view! {
@@ -43,12 +46,50 @@ pub fn CategoryChannel(
         .categoryChannel {
             display: flex;
             flex-direction: column;
-            margin-top: 15px;
+            margin: 0 10px 15px 0;
             cursor: pointer;
         }
 
+        .categoryChannel > .categoryChannelTitle {
+            display: flex;
+        }
+
+        .categoryChannel > .categoryChannelTitle > p {
+            font-size: 14px;
+            font-weight: bold;
+            width: 100%;
+            color: var(--secondary-text);
+            transition: 0.2s;
+        }
+        
+        .categoryChannel > .categoryChannelTitle > p:hover {
+            color: var(--primary-text);
+        }
+
+        .categoryChannel > .categoryChannelTitle > svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            fill: var(--secondary-text);
+            transition: 0.2s;
+        }
+
+        .categoryChannel:hover > .categoryChannelTitle > svg {
+            fill: var(--primary-text);
+        }
+        
+        .categoryChannel > .categoryChannelTitle > svg.open {
+            rotate: 0deg;
+            transition: 0.2s;
+        }
+
+        .categoryChannel > .categoryChannelTitle > svg.closed {
+            rotate: -90deg;
+            transition: 0.2s;
+        }
+    
         .categoryChannel > .channel {
-            margin-left: 15px;
+            margin-left: 12.5px;
         }
        "</style>
     }

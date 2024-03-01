@@ -176,7 +176,7 @@ pub fn GuildsSidebar(
             .guilds_sidebar > .guildButton p {
                 font-size: 20px;
                 font-weight: w600;
-                color: var(--text-primary);
+                color: var(--primary-text);
             }
 
             .guilds_sidebar > .homeButton {
