@@ -1,7 +1,7 @@
 use leptos::*;
 use wasm_bindgen::prelude::*;
 
-use rustcord_lib::discord::Discord;
+use rustcord_lib::data::discord::app_data::AppData;
 
 use crate::AppState;
 
@@ -14,8 +14,8 @@ extern "C" {
 #[component]
 pub fn CurrentUserPanel(
     state: ReadSignal<AppState>,
-    set_state: WriteSignal<AppState>,
-    discord: ReadSignal<Discord>,
+    set_app_state: WriteSignal<AppState>,
+    app_data: ReadSignal<AppData>,
 ) -> impl IntoView {
     view! {
         <div class={"current_user_panel"}>

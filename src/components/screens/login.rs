@@ -1,12 +1,15 @@
 use leptos::{*};
+use rustcord_lib::data::discord::settings::Settings;
+use rustcord_lib::data::discord::user::User;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
 use web_sys::SubmitEvent;
 
+use rustcord_lib::data::discord::app_data::AppData;
+
 use crate::app::AppState;
 use crate::Screen;
-use rustcord_lib::discord::{Discord, Settings, User};
 
 #[wasm_bindgen]
 extern "C" {
@@ -28,8 +31,8 @@ struct SettingsArgs<'a> {
 pub fn LoginScreen(
     state: ReadSignal<AppState>,
     set_state: WriteSignal<AppState>,
-    discord: ReadSignal<Discord>,
-    set_discord: WriteSignal<Discord>,
+    app_data: ReadSignal<AppData>,
+    set_app_data: WriteSignal<AppData>,
 ) -> impl IntoView {
     let (token, set_token) = create_signal(String::new());
 
@@ -42,7 +45,7 @@ pub fn LoginScreen(
         ev.prevent_default();
         spawn_local(async move {
             let mut state = state.get_untracked();
-            let mut discord = discord.get_untracked();
+            let mut app_data = app_data.get_untracked();
             let token = token.get_untracked();
             if token.is_empty() {
                 return;
@@ -59,11 +62,11 @@ pub fn LoginScreen(
             let settings: Settings = invoke("get_discord_settings", settings_args).await.into_serde().unwrap();
             logging::log!("Settings: {:?}", &settings);
             
-            discord.token = token;
-            discord.settings = settings;
-            discord.user = user;
-            set_discord.set(discord.clone());
-            logging::log!("Login success: {:?}", &discord.user.username);
+            app_data.token = token;
+            app_data.settings = settings;
+            app_data.user = user;
+            set_app_data.set(app_data.clone());
+            logging::log!("Login success: {:?}", &app_data.user.username);
 
             // update app state screen
             state.screen = Screen::DISCORD;

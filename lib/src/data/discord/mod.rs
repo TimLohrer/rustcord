@@ -5,3 +5,4 @@ pub mod guild_folder_id;
 pub mod permission_overwrite;
 pub mod settings;
 pub mod user;
+pub mod app_data;

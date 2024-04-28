@@ -1,7 +1,7 @@
 use leptos::*;
 use wasm_bindgen::prelude::*;
 
-use rustcord_lib::discord::User;
+use rustcord_lib::data::discord::user::User;
 
 #[wasm_bindgen]
 extern "C" {

@@ -1,7 +1,7 @@
 use leptos::*;
 use wasm_bindgen::prelude::*;
 
-use rustcord_lib::discord::Discord;
+use rustcord_lib::data::discord::app_data::AppData;
 
 use crate::AppState;
 
@@ -15,8 +15,8 @@ extern "C" {
 pub fn GuildsSidebar(
     state: ReadSignal<AppState>,
     set_state: WriteSignal<AppState>,
-    discord: ReadSignal<Discord>,
-    set_discord: WriteSignal<Discord>,
+    app_data: ReadSignal<AppData>,
+    set_app_data: WriteSignal<AppData>,
 ) -> impl IntoView {
     let switch_guild = move |guild_id: String| {
         let mut state = state.get();
@@ -38,7 +38,7 @@ pub fn GuildsSidebar(
             <span class={"seperator"} />
             </div>
             {
-                discord.clone().get().guilds_minimal.into_iter().map(|guild| {
+                app_data.clone().get().guilds_minimal.into_iter().map(|guild| {
                     let guild_id = guild.id.clone();
                     view! {
                         <div on:click={move |_| switch_guild(guild_id.clone())} class={format!("guildButton hasIndicatorHandle {} {}", if guild.clone().icon.is_none() {"no-icon"} else {""}, if state.get().active_guild_id == guild.id {"active"} else {""})}>

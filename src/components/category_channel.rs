@@ -1,7 +1,8 @@
 use leptos::*;
 use wasm_bindgen::prelude::*;
 
-use rustcord_lib::discord::{Discord, Channel};
+use rustcord_lib::data::discord::app_data::AppData;
+use rustcord_lib::data::channel::channel::Channel;
 use crate::app::AppState;
 use crate::components::channel::Channel as ChannelComponent;
 
@@ -15,8 +16,8 @@ extern "C" {
 pub fn CategoryChannel(
     state: ReadSignal<AppState>,
     set_state: WriteSignal<AppState>,
-    discord: ReadSignal<Discord>,
-    set_discord: WriteSignal<Discord>,
+    app_data: ReadSignal<AppData>,
+    set_app_data: WriteSignal<AppData>,
     channel: Channel
 ) -> impl IntoView {
     let (show_children, set_show_children) = create_signal(true);
@@ -35,7 +36,7 @@ pub fn CategoryChannel(
             {move || if show_children.get() {
                 {channel.children.as_ref().unwrap().into_iter().map(|child| {
                     view! {
-                        <ChannelComponent state=state set_state=set_state discord=discord set_discord=set_discord channel=child.clone() />
+                        <ChannelComponent state=state set_state=set_state app_data=app_data set_app_data=set_app_data channel=child.clone() />
                     }
                 })}.collect::<Vec<_>>().into_view()
             } else {

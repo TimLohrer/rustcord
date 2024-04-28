@@ -1,8 +1,8 @@
 use leptos::*;
 use wasm_bindgen::prelude::*;
 
-use rustcord_lib::discord::{Discord, Channel};
-use web_sys::MouseEvent;
+use rustcord_lib::data::discord::app_data::AppData;
+use rustcord_lib::data::channel::channel::Channel;
 use crate::app::AppState;
 
 #[wasm_bindgen]
@@ -15,8 +15,8 @@ extern "C" {
 pub fn Channel(
     state: ReadSignal<AppState>,
     set_state: WriteSignal<AppState>,
-    discord: ReadSignal<Discord>,
-    set_discord: WriteSignal<Discord>,
+    app_data: ReadSignal<AppData>,
+    set_app_data: WriteSignal<AppData>,
     channel: Channel
 ) -> impl IntoView {
 

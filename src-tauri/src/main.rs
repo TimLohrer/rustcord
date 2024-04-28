@@ -2,8 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 pub mod api;
 
-use rustcord_lib::discord::{Channel, Guild, GuildMinimal, Settings, User};
 use reqwest::Error;
+use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings, user::User}, guild::{guild::Guild, guild_minimal::GuildMinimal}};
 
 use crate::api::discord_api::DiscordApi;
 

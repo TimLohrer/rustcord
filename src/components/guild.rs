@@ -1,11 +1,12 @@
 use std::cmp::Ordering;
 
 use leptos::*;
+use rustcord_lib::data::discord::app_data::AppData;
+use rustcord_lib::data::channel::channel::Channel;
+use rustcord_lib::data::guild::guild::Guild;
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
-
-use rustcord_lib::discord::{Channel, Discord, Guild};
 
 use crate::components::category_channel::CategoryChannel;
 use crate::components::channel::Channel as ChannelComponent;
@@ -33,17 +34,17 @@ struct GetGuildChannelsArgs<'a> {
 pub fn Guild(
     state: ReadSignal<AppState>,
     set_state: WriteSignal<AppState>,
-    discord: ReadSignal<Discord>,
-    set_discord: WriteSignal<Discord>,
+    app_data: ReadSignal<AppData>,
+    set_app_data: WriteSignal<AppData>,
 ) -> impl IntoView {
     let mut guild_channels: Vec<Channel> = vec![];
     let fetch_guild = move || {
         spawn_local(async move {
-            let mut discord = discord.get();
+            let mut app_data = app_data.get();
 
-            let get_guild_args = to_value(&GetGuildArgs { token: &discord.token, guildId: &state.get().active_guild_id }).unwrap();
+            let get_guild_args = to_value(&GetGuildArgs { token: &app_data.token, guildId: &state.get().active_guild_id }).unwrap();
             let mut guild: Guild = invoke("get_discord_guild", get_guild_args).await.into_serde().unwrap();
-            let get_guild_channels_args = to_value(&GetGuildChannelsArgs { token: &discord.token, guildId: &guild.id }).unwrap();
+            let get_guild_channels_args = to_value(&GetGuildChannelsArgs { token: &app_data.token, guildId: &guild.id }).unwrap();
             guild.channels = invoke("get_discord_guild_channels", get_guild_channels_args).await.into_serde().unwrap();
             
             // sort channels
@@ -71,20 +72,20 @@ pub fn Guild(
             
             
             guild.channels = Some(guild_channels.clone());
-            discord.guilds.push(guild.clone());
-            set_discord.set(discord.clone());
+            app_data.guilds.push(guild.clone());
+            set_app_data.set(app_data.clone());
             // logging::log!("Fetched guild: {:?}", &guild);
         });
     };
 
-    if discord.clone().get().guilds.iter().find(|guild| guild.id == state.get().active_guild_id).is_none() {
+    if app_data.clone().get().guilds.iter().find(|guild| guild.id == state.get().active_guild_id).is_none() {
         logging::log!("Fetching guild {}...", &state.get().active_guild_id);
         fetch_guild();
     }
 
     view! {
         <div class={"guild"}>
-            {discord.clone().get().guilds.into_iter().find(|guild| guild.id == state.get().active_guild_id).map(|guild| {
+            {app_data.clone().get().guilds.into_iter().find(|guild| guild.id == state.get().active_guild_id).map(|guild| {
                 view! {
                     <div class="channelSidebar">
                         <div class={"guildHeader"}>
@@ -94,11 +95,11 @@ pub fn Guild(
                             {guild.channels.as_ref().unwrap().into_iter().map(|channel| {
                                 if channel.r#type == 4 {
                                     view! {
-                                        <CategoryChannel state=state set_state=set_state discord=discord set_discord=set_discord channel=channel.clone() />
+                                        <CategoryChannel state=state set_state=set_state app_data=app_data set_app_data=set_app_data channel=channel.clone() />
                                     }
                                 } else {
                                     view! {
-                                        <ChannelComponent state=state set_state=set_state discord=discord set_discord=set_discord channel=channel.clone() />
+                                        <ChannelComponent state=state set_state=set_state app_data=app_data set_app_data=set_app_data channel=channel.clone() />
                                     }
                                 }
                             }).collect::<Vec<_>>()}

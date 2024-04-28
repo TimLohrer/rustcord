@@ -3,10 +3,11 @@ use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
 
+use rustcord_lib::data::discord::app_data::AppData;
+
 use crate::components::guild::Guild;
 use crate::components::guilds_sidebar::GuildsSidebar;
 use crate::app::AppState;
-use rustcord_lib::discord::Discord;
 
 #[wasm_bindgen]
 extern "C" {
@@ -23,22 +24,22 @@ struct GetGuildsArgs<'a> {
 pub fn DiscordScreen(
     state: ReadSignal<AppState>,
     set_state: WriteSignal<AppState>,
-    discord: ReadSignal<Discord>,
-    set_discord: WriteSignal<Discord>,
+    app_data: ReadSignal<AppData>,
+    set_app_data: WriteSignal<AppData>,
 ) -> impl IntoView {
     let fetch_guilds = move || {
         spawn_local(async move {
-            let mut discord = discord.get();
+            let mut app_data = app_data.get();
             
-            let get_guilds_args = to_value(&GetGuildsArgs { token: &discord.token }).unwrap();
-            discord.guilds_minimal = invoke("get_discord_guilds", get_guilds_args).await.into_serde().unwrap();
-            set_discord.set(discord.clone());
-            logging::log!("Fetched guilds: {:?}", &discord.guilds_minimal);
+            let get_guilds_args = to_value(&GetGuildsArgs { token: &app_data.token }).unwrap();
+            app_data.guilds_minimal = invoke("get_discord_guilds", get_guilds_args).await.into_serde().unwrap();
+            set_app_data.set(app_data.clone());
+            logging::log!("Fetched guilds: {:?}", &app_data.guilds_minimal);
         });
 
     };
 
-    if discord.clone().get().guilds_minimal.is_empty() {
+    if app_data.clone().get().guilds_minimal.is_empty() {
         logging::log!("Fetching guilds...");
         fetch_guilds();
     }
@@ -46,16 +47,16 @@ pub fn DiscordScreen(
     view! {
         <main class="discord-screen">
             {move || if state.get().active_guild_id == "HOME" {
-                let _ = discord.get();
+                let _ = app_data.get();
                 view! {
-                    <GuildsSidebar state=state set_state=set_state discord=discord.clone() set_discord=set_discord />
+                    <GuildsSidebar state=state set_state=set_state app_data=app_data.clone() set_app_data=set_app_data />
                     <p>HOME</p>
                 }.into_view()
             } else {
-                let _ = discord.get();
+                let _ = app_data.get();
                 view! {
-                    <GuildsSidebar state=state set_state=set_state discord=discord set_discord=set_discord />
-                    <Guild state=state set_state=set_state discord=discord set_discord=set_discord />
+                    <GuildsSidebar state=state set_state=set_state app_data=app_data set_app_data=set_app_data />
+                    <Guild state=state set_state=set_state app_data=app_data set_app_data=set_app_data />
                 }.into_view()
             }}
         </main>

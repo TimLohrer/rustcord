@@ -1,5 +1,5 @@
 use reqwest;
-use rustcord_lib::discord::{Channel, Guild, GuildMinimal, Settings, User};
+use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings, user::User}, guild::{guild::Guild, guild_minimal::GuildMinimal}};
 
 use crate::VERBOSE;
 
