@@ -1,5 +1,5 @@
 use reqwest;
-use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings, user::User}, guild::{guild::Guild, guild_minimal::GuildMinimal}};
+use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings, user::User}, guild::{guild::Guild, guild_minimal::GuildMinimal}, message::message::Message};
 
 use crate::VERBOSE;
 
@@ -75,6 +75,18 @@ impl DiscordApi {
             .await?
             .error_for_status()?;
         let json = res.json::<Vec<Channel>>().await.unwrap();
+        Ok(json)
+    }
+
+    pub async fn get_messages(token: String, channel_id: String) -> Result<Vec<Message>, reqwest::Error> {
+        let client = reqwest::Client::new();
+        let res = client
+            .get(format!("{}/channels/{}/messages?limit=50", DiscordApi::get_api_base(), channel_id))
+            .header("Authorization", token)
+            .send()
+            .await?
+            .error_for_status()?;
+        let json = res.json::<Vec<Message>>().await.unwrap();
         Ok(json)
     }
 }

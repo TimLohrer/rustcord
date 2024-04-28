@@ -3,7 +3,7 @@
 pub mod api;
 
 use reqwest::Error;
-use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings, user::User}, guild::{guild::Guild, guild_minimal::GuildMinimal}};
+use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings, user::User}, guild::{guild::Guild, guild_minimal::GuildMinimal}, message::message::Message};
 
 use crate::api::discord_api::DiscordApi;
 
@@ -70,6 +70,18 @@ async fn get_discord_guild_channels(token: String, guild_id: String) -> Result<V
     }
 }
 
+#[tauri::command]
+async fn get_discord_messages(token: String, channel_id: String) -> Result<Vec<Message>, String> {
+    if VERBOSE {
+        println!("Called get_discord_messages: {:?} {:?}", token, channel_id);
+    }
+    let result: Result<Vec<Message>, Error> = DiscordApi::get_messages(DiscordApi::get_authorization_header(token, BOT_USER), channel_id).await;
+    match result {
+        Ok(messages) => Ok(messages),
+        Err(e) => Err(e.to_string())
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -77,7 +89,8 @@ fn main() {
             get_discord_settings,
             get_discord_guilds,
             get_discord_guild,
-            get_discord_guild_channels
+            get_discord_guild_channels,
+            get_discord_messages
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
