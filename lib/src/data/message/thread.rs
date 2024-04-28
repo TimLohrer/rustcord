@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::thread_metadata::ThreadMetadata;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Thread {
     id: String,
     #[serde(rename = "type")]

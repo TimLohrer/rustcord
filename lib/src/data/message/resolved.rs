@@ -1,9 +1,11 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Resolved {
-    users: Vec<String>,
-    members: Vec<String>,
-    channels: Vec<String>,
-    roles: Vec<String>,
+    users: HashMap<String, String>,
+    members: HashMap<String, String>,
+    channels: HashMap<String, String>,
+    roles: HashMap<String, String>,
 }

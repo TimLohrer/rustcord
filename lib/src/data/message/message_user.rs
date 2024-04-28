@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::data::discord::avatar_decoration::AvatarDecorationData;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MessageUser {
     id: String,
     username: String,

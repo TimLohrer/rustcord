@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 
 use super::{activity_instance::ActivityInstance, application::Application, attachment::Attachment, embed::Embed, interaction::Interaction, interaction_metadata::InteractionMetadata, message_component::MessageComponent, message_reference::MessageReference, message_user::MessageUser, poll::Poll, resolved::Resolved, sticker_item::StickerItem, thread::Thread};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Message {
     id: String,
     #[serde(rename = "type")]

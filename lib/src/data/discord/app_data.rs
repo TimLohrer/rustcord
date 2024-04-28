@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
-use crate::data::guild::{guild::Guild, guild_minimal::GuildMinimal};
+use crate::data::{guild::{guild::Guild, guild_minimal::GuildMinimal}, message::message::Message};
 
 use super::{settings::Settings, user::User};
 
@@ -10,7 +12,8 @@ pub struct AppData {
     pub settings: Settings,
     pub user: User,
     pub guilds_minimal: Vec<GuildMinimal>,
-    pub guilds: Vec<Guild>
+    pub guilds: Vec<Guild>,
+    pub message_cache: HashMap<String, Vec<Message>>
 }
 
 impl AppData {
@@ -20,7 +23,8 @@ impl AppData {
             settings: Settings::new(),
             user: User::new(),
             guilds_minimal: Vec::new(),
-            guilds: Vec::new(),    
+            guilds: Vec::new(),
+            message_cache: HashMap::new()
         }
     }
 }

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{authorizing_integration_owner::AuthorizingIntegrationOwners, message_user::MessageUser};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct InteractionMetadata {
     id: String,
     #[serde(rename = "type")]
