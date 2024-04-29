@@ -17,4 +17,6 @@ pub struct MessageUser {
     pub banner_color: Option<String>,
     pub clan: Option<String>,
     pub bot: Option<bool>,
+    pub verified: Option<bool>,
+    pub system: Option<bool>,
 }

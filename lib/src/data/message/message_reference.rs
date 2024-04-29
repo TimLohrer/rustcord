@@ -4,5 +4,5 @@ use serde::{Deserialize, Serialize};
 pub struct MessageReference {
     pub channel_id: String,
     pub message_id: Option<String>,
-    pub guild_id: String,
+    pub guild_id: Option<String>,
 }

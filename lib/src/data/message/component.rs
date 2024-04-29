@@ -25,6 +25,6 @@ pub struct Component {
 pub struct ComponentDropdownOption {
     pub label: String,
     pub value: String,
-    pub description: String,
+    pub description: Option<String>,
     pub emoji: Option<MessageEmoji>,
 }

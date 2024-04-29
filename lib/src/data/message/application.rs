@@ -5,7 +5,7 @@ pub struct Application {
     pub id: String,
     pub name: String,
     pub icon: String,
-    pub description: String,
+    pub description: Option<String>,
     pub r#type: Option<String>,
     pub cover_image: String,
     pub summary: String,

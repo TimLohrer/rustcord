@@ -1,11 +1,8 @@
-
-use std::collections::HashMap;
-
 use serde::{Deserialize, Serialize};
 
 use crate::data::channel::channel::Channel;
 
-use super::{emoji::Emoji, role::Role, sticker::Sticker};
+use super::{emoji::Emoji, incidents_data::IncidentsData, role::Role, sticker::Sticker};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Guild {
@@ -49,7 +46,7 @@ pub struct Guild {
     pub nsfw_level: i32,
     pub emojis: Vec<Emoji>,
     pub stickers: Vec<Sticker>,
-    pub incidents_data: Option<HashMap<String, String>>,
+    pub incidents_data: Option<IncidentsData>,
     pub inventory_settings: Option<String>,
     pub embed_enabled: bool,
     pub embed_channel_id: Option<String>,

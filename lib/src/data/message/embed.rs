@@ -19,8 +19,8 @@ pub struct Embed {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmbedAuthor {
     pub name: String,
-    pub icon_url: String,
-    pub proxy_icon_url: String,
+    pub icon_url: Option<String>,
+    pub proxy_icon_url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -38,13 +38,13 @@ pub struct EmbedFooter {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmbedProvider {
     pub name: String,
-    pub url: String,
+    pub url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmbedThumbnail {
     url: String,
-    proxy_url: String,
+    proxy_url: Option<String>,
     width: i64,
     height: i64,
     placeholder: Option<String>,

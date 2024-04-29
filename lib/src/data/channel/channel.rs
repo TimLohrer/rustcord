@@ -31,6 +31,12 @@ pub struct Channel {
 	pub icon_emoji: Option<IconEmoji>,
 	pub theme_color: Option<i32>,
 	pub template: Option<String>,
-    pub voice_background_display: Option<String>,
+    pub voice_background_display: Option<VoiceBackgroundDisplay>,
     pub nsfw: Option<bool>
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct VoiceBackgroundDisplay {
+    pub r#type: i32,
+    pub resource_id: String
 }
