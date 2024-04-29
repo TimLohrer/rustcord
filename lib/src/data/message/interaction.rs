@@ -4,9 +4,8 @@ use super::message_user::MessageUser;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Interaction {
-    id: String,
-    #[serde(rename = "type")]
-    interaction_type: i64,
-    name: String,
-    user: MessageUser,
+    pub id: String,
+    pub r#type: i64,
+    pub name: String,
+    pub user: MessageUser,
 }

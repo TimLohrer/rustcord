@@ -17,13 +17,6 @@
   --secondary-text: #b3b5b9;
   --white: #ffffff;
   --black: #000000;
-
-  color: var(--primary-background);
-  background-color: var(--white);
-
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -34,4 +27,12 @@
 
 .emoji {
   font-family: 'emoji';
+}
+
+* {
+  color: var(--white);
+
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
 }

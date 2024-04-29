@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct MessageReference {
-    channel_id: String,
-    message_id: Option<String>,
-    guild_id: String,
+    pub channel_id: String,
+    pub message_id: Option<String>,
+    pub guild_id: String,
 }

@@ -2,44 +2,43 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Embed {
-    #[serde(rename = "type")]
-    embed_type: String,
-    url: Option<String>,
-    title: Option<String>,
-    description: Option<String>,
-    content_scan_version: Option<i64>,
-    color: Option<i64>,
-    fields: Option<Vec<EmbedField>>,
-    provider: Option<EmbedProvider>,
-    thumbnail: Option<EmbedThumbnail>,
-    video: Option<EmbedThumbnail>,
-    author: Option<EmbedAuthor>,
-    footer: Option<EmbedFooter>,
+    pub r#type: String,
+    pub url: Option<String>,
+    pub title: Option<String>,
+    pub description: Option<String>,
+    pub content_scan_version: Option<i64>,
+    pub color: Option<i64>,
+    pub fields: Option<Vec<EmbedField>>,
+    pub provider: Option<EmbedProvider>,
+    pub thumbnail: Option<EmbedThumbnail>,
+    pub video: Option<EmbedThumbnail>,
+    pub author: Option<EmbedAuthor>,
+    pub footer: Option<EmbedFooter>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmbedAuthor {
-    name: String,
-    icon_url: String,
-    proxy_icon_url: String,
+    pub name: String,
+    pub icon_url: String,
+    pub proxy_icon_url: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmbedField {
-    name: String,
-    value: String,
-    inline: bool,
+    pub name: String,
+    pub value: String,
+    pub inline: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmbedFooter {
-    text: String,
+    pub text: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct EmbedProvider {
-    name: String,
-    url: String,
+    pub name: String,
+    pub url: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

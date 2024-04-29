@@ -2,13 +2,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Application {
-    id: String,
-    name: String,
-    icon: String,
-    description: String,
-    #[serde(rename = "type")]
-    application_type: Option<String>,
-    cover_image: String,
-    summary: String,
-    is_monetized: bool,
+    pub id: String,
+    pub name: String,
+    pub icon: String,
+    pub description: String,
+    pub r#type: Option<String>,
+    pub cover_image: String,
+    pub summary: String,
+    pub is_monetized: bool,
 }

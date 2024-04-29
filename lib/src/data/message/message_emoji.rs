@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct MessageEmoji {
-    id: String,
-    name: String,
+    pub id: String,
+    pub name: String,
 }

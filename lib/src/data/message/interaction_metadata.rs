@@ -4,11 +4,10 @@ use super::{authorizing_integration_owner::AuthorizingIntegrationOwners, message
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct InteractionMetadata {
-    id: String,
-    #[serde(rename = "type")]
-    interaction_metadata_type: i64,
-    user_id: String,
-    user: MessageUser,
-    authorizing_integration_owners: AuthorizingIntegrationOwners,
-    name: String,
+    pub id: String,
+    pub r#type: i64,
+    pub user_id: String,
+    pub user: MessageUser,
+    pub authorizing_integration_owners: AuthorizingIntegrationOwners,
+    pub name: String,
 }

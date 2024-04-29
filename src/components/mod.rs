@@ -6,3 +6,4 @@ pub mod current_user_panel;
 pub mod guild;
 pub mod channel;
 pub mod category_channel;
+pub mod message;

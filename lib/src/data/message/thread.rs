@@ -1,25 +1,31 @@
 use serde::{Deserialize, Serialize};
 
-use super::thread_metadata::ThreadMetadata;
-
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Thread {
-    id: String,
-    #[serde(rename = "type")]
-    thread_type: i64,
-    last_message_id: String,
-    flags: i64,
-    guild_id: String,
-    name: String,
-    parent_id: String,
-    rate_limit_per_user: i64,
-    bitrate: i64,
-    user_limit: i64,
-    rtc_region: Option<String>,
-    owner_id: String,
-    thread_metadata: ThreadMetadata,
-    message_count: i64,
-    member_count: i64,
-    total_message_sent: i64,
-    member_ids_preview: Vec<String>,
+    pub id: String,
+    pub r#type: i64,
+    pub last_message_id: String,
+    pub flags: i64,
+    pub guild_id: String,
+    pub name: String,
+    pub parent_id: String,
+    pub rate_limit_per_user: i64,
+    pub bitrate: i64,
+    pub user_limit: i64,
+    pub rtc_region: Option<String>,
+    pub owner_id: String,
+    pub thread_metadata: ThreadMetadata,
+    pub message_count: i64,
+    pub member_count: i64,
+    pub total_message_sent: i64,
+    pub member_ids_preview: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ThreadMetadata {
+    pub archived: bool,
+    pub archive_timestamp: String,
+    pub auto_archive_duration: i64,
+    pub locked: bool,
+    pub create_timestamp: String,
 }

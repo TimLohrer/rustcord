@@ -1,4 +1,7 @@
 use leptos::*;
+use rustcord_lib::data::message::message::Message;
+use serde::{Deserialize, Serialize};
+use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
 
 use rustcord_lib::data::discord::app_data::AppData;
@@ -11,6 +14,13 @@ extern "C" {
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
 
+#[derive(Serialize, Deserialize)]
+struct GetMessagesArgs<'a> {
+    token: &'a str,
+    #[serde(rename = "channelId")]
+    channel_id: &'a str,
+}
+
 #[component]
 pub fn Channel(
     state: ReadSignal<AppState>,
@@ -20,10 +30,30 @@ pub fn Channel(
     channel: Channel
 ) -> impl IntoView {
 
+    let fetch_messages = move |channel_id: String| {
+        spawn_local(async move {
+            let mut app_data = app_data.get();
+            let get_messages_args = to_value(&GetMessagesArgs { token: &app_data.token, channel_id: &channel_id }).unwrap();
+            let mut messages: Vec<Message> = serde_wasm_bindgen::from_value(invoke("get_discord_messages", get_messages_args).await).unwrap();
+
+            messages.reverse();
+
+            app_data.message_cache.insert(channel_id.clone(), messages.clone());
+
+            set_app_data.set(app_data.clone());
+            // logging::log!("Fetched messages: {:?}", &messages);
+        });
+    };
+    
     let switch_channel = move |channel_id: String| {
         let mut state = state.get();
-        state.active_channel_id = channel_id;
+        state.active_channel_id = channel_id.clone();
+
         set_state.set(state);
+        
+        if !app_data.clone().get().message_cache.contains_key(&channel_id) {
+            fetch_messages(channel_id.clone());
+        }
     };
     
     let channel_id = channel.id.clone();

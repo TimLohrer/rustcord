@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct StickerItem {
-    id: String,
-    name: String,
-    format_type: i64,
+    pub id: String,
+    pub name: String,
+    pub format_type: i64,
 }
