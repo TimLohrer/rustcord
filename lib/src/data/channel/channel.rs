@@ -38,5 +38,5 @@ pub struct Channel {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct VoiceBackgroundDisplay {
     pub r#type: i32,
-    pub resource_id: String
+    pub resource_id: Option<String>
 }

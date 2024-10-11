@@ -41,9 +41,9 @@ pub struct Settings {
     pub custom_status: Option<CustomStatus>,
     pub activity_restricted_guild_ids: Vec<String>,
     pub activity_joining_restricted_guild_ids: Vec<String>,
-    pub broadcast_allow_friends: bool,
-    pub broadcast_allowed_guild_ids: Vec<String>,
-    pub broadcast_allowed_user_ids: Vec<String>
+    pub broadcast_allow_friends: Option<bool>,
+    pub broadcast_allowed_guild_ids: Option<Vec<String>>,
+    pub broadcast_allowed_user_ids: Option<Vec<String>>
 }
 
 impl Settings {
@@ -84,9 +84,9 @@ impl Settings {
             custom_status: None,
             activity_restricted_guild_ids: Vec::new(),
             activity_joining_restricted_guild_ids: Vec::new(),
-            broadcast_allow_friends: false,
-            broadcast_allowed_guild_ids: Vec::new(),
-            broadcast_allowed_user_ids: Vec::new()
+            broadcast_allow_friends: Some(false),
+            broadcast_allowed_guild_ids: Some(Vec::new()),
+            broadcast_allowed_user_ids: Some(Vec::new())
         }
     }
 }
