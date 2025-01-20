@@ -21,6 +21,7 @@ pub fn GuildsSidebar(
     let switch_guild = move |guild_id: String| {
         let mut state = state.get();
         state.active_guild_id = guild_id;
+        state.active_channel_id = "".to_string();
         set_state.set(state);
     };
 
