@@ -115,7 +115,7 @@ pub fn App() -> impl IntoView {
         let mut state = state.get();
         state.screen = Screen::LOGIN;
         set_state.set(state);
-    }, Duration::from_secs(1));
+    }, Duration::from_secs(0));
     
     view! {
         <main class="app">

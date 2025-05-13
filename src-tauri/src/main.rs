@@ -7,7 +7,7 @@ use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings
 
 use crate::api::discord_api::DiscordApi;
 
-pub const VERBOSE: bool = true;
+pub const VERBOSE: bool = false;
 pub const BOT_USER: bool = false;
 
 #[tauri::command]

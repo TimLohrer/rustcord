@@ -30,6 +30,16 @@ impl DiscordApi {
         let json = res.json::<User>().await.unwrap();
         Ok(json)
     }
+
+    pub async fn get_gateway_url() -> Result<String, reqwest::Error> {
+        let client = reqwest::Client::new();
+        let res = client
+            .get(format!("{}/gateway", DiscordApi::get_api_base()))
+            .send().await?
+            .error_for_status()?;
+        let json = res.json::<GatewayUrlResponse>().await.unwrap();
+        Ok(json.url)
+    }
     
     pub async fn get_discord_settings(token: String) -> Result<Settings, reqwest::Error> {
         let client = reqwest::Client::new();
@@ -89,4 +99,9 @@ impl DiscordApi {
         let json = res.json::<Vec<Message>>().await.unwrap();
         Ok(json)
     }
+}
+
+#[derive(serde::Deserialize)]
+struct GatewayUrlResponse {
+    url: String
 }
