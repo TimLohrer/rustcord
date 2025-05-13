@@ -1,9 +1,12 @@
 use reqwest;
-use rustcord_lib::data::{channel::channel::Channel, discord::{settings::Settings, user::User}, guild::{guild::Guild, guild_minimal::GuildMinimal}, message::message::Message};
+use serde_json::Value;
 
-use crate::VERBOSE;
+const API_VERSION: &str = "v10";
 
-const API_VERSION: &str = "v9";
+#[derive(serde::Deserialize)]
+struct GatewayUrlResponse {
+    url: String
+}
 
 pub struct DiscordApi {}
 
@@ -13,21 +16,17 @@ impl DiscordApi {
     }
 
     pub fn get_authorization_header(token: String, bot_user: bool) -> String {
-        let auth_header = format!("{}{}", if bot_user {"Bot "} else {""}, token);
-        if VERBOSE {
-            println!("Generated auth header: {:?}", auth_header)
-        }
-        auth_header
+        format!("{}{}", if bot_user {"Bot "} else {""}, token)
     }
 
-    pub async fn login(token: String) -> Result<User, reqwest::Error>{
+    pub async fn login(token: String) -> Result<Value, reqwest::Error>{
         let client = reqwest::Client::new();
         let res = client
             .get(format!("{}/users/@me", DiscordApi::get_api_base()))
             .header("Authorization", token)
             .send().await?
             .error_for_status()?;
-        let json = res.json::<User>().await.unwrap();
+        let json = res.json().await.unwrap();
         Ok(json)
     }
 
@@ -41,18 +40,18 @@ impl DiscordApi {
         Ok(json.url)
     }
     
-    pub async fn get_discord_settings(token: String) -> Result<Settings, reqwest::Error> {
+    pub async fn get_discord_settings(token: String) -> Result<Value, reqwest::Error> {
         let client = reqwest::Client::new();
         let res = client
             .get(format!("{}/users/@me/settings", DiscordApi::get_api_base()))
             .header("Authorization", token)
             .send().await?
             .error_for_status()?;
-        let json = res.json::<Settings>().await.unwrap();
+        let json = res.json().await.unwrap();
         Ok(json)
     }
 
-    pub async fn get_guilds(token: String) -> Result<Vec<GuildMinimal>, reqwest::Error> {
+    pub async fn get_guilds(token: String) -> Result<Value, reqwest::Error> {
         let client = reqwest::Client::new();
         let res = client
             .get(format!("{}/users/@me/guilds", DiscordApi::get_api_base()))
@@ -60,11 +59,11 @@ impl DiscordApi {
             .send()
             .await?
             .error_for_status()?;
-        let json = res.json::<Vec<GuildMinimal>>().await.unwrap();
+        let json = res.json().await.unwrap();
         Ok(json)
     }
     
-    pub async fn get_guild(token: String, guild_id: String) -> Result<Guild, reqwest::Error> {
+    pub async fn get_guild(token: String, guild_id: String) -> Result<Value, reqwest::Error> {
         let client = reqwest::Client::new();
         let res = client
             .get(format!("{}/guilds/{}", DiscordApi::get_api_base(), guild_id))
@@ -72,11 +71,11 @@ impl DiscordApi {
             .send()
             .await?
             .error_for_status()?;
-        let json = res.json::<Guild>().await.unwrap();
+        let json = res.json().await.unwrap();
         Ok(json)
     }
     
-    pub async fn get_guild_channels(token: String, guild_id: String) -> Result<Vec<Channel>, reqwest::Error> {
+    pub async fn get_guild_channels(token: String, guild_id: String) -> Result<Value, reqwest::Error> {
         let client = reqwest::Client::new();
         let res = client
             .get(format!("{}/guilds/{}/channels", DiscordApi::get_api_base(), guild_id))
@@ -84,11 +83,11 @@ impl DiscordApi {
             .send()
             .await?
             .error_for_status()?;
-        let json = res.json::<Vec<Channel>>().await.unwrap();
+        let json = res.json::<Value>().await.unwrap();
         Ok(json)
     }
 
-    pub async fn get_messages(token: String, channel_id: String) -> Result<Vec<Message>, reqwest::Error> {
+    pub async fn get_messages(token: String, channel_id: String) -> Result<Value, reqwest::Error> {
         let client = reqwest::Client::new();
         let res = client
             .get(format!("{}/channels/{}/messages?limit=50", DiscordApi::get_api_base(), channel_id))
@@ -96,12 +95,7 @@ impl DiscordApi {
             .send()
             .await?
             .error_for_status()?;
-        let json = res.json::<Vec<Message>>().await.unwrap();
+        let json = res.json().await.unwrap();
         Ok(json)
     }
-}
-
-#[derive(serde::Deserialize)]
-struct GatewayUrlResponse {
-    url: String
 }
