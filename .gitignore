@@ -1,5 +1,11 @@
-/dist/
-/target/
-/Cargo.lock
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
 .env
-.DS_STORE
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+*/target/*

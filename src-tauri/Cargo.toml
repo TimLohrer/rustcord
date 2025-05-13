@@ -1,20 +1,20 @@
 [package]
 name = "rustcord"
-version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+version = "0.0.1"
+description = "Discord App in Tauri"
+authors = ["TimLohrer"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5", features = [] }
+tauri-build = { version = "2.2.0", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = ["shell-open"] }
+tauri = { version = "2.5.1", features = [ "macos-private-api", "protocol-asset", "tray-icon"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-reqwest = { version = "0.11.24", features = ["json", "multipart"] }
+reqwest = { version = "0.12.15", features = ["json", "multipart"] }
 
 # rustcord lib
 rustcord_lib = { path = "../lib" }

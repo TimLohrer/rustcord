@@ -1,0 +1,139 @@
+@font-face {
+    font-family: 'emoji';
+    src: url('/font/ggsans-Bold.eot');
+    src: url('/font/discord-emojis.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans';
+    src: url('/font/ggsans-Bold.eot');
+    src: local('gg sans Bold'), local('ggsans-Bold'),
+        url('/font/ggsans-Bold.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-Bold.woff2') format('woff2'),
+        url('/font/ggsans-Bold.woff') format('woff'),
+        url('/font/ggsans-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans';
+    src: url('/font/ggsans-SemiboldItalic.eot');
+    src: local('gg sans SemiBold Italic'), local('ggsans-SemiboldItalic'),
+        url('/font/ggsans-SemiboldItalic.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-SemiboldItalic.woff2') format('woff2'),
+        url('/font/ggsans-SemiboldItalic.woff') format('woff'),
+        url('/font/ggsans-SemiboldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans';
+    src: url('/font/ggsans-MediumItalic.eot');
+    src: local('gg sans Medium Italic'), local('ggsans-MediumItalic'),
+        url('/font/ggsans-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-MediumItalic.woff2') format('woff2'),
+        url('/font/ggsans-MediumItalic.woff') format('woff'),
+        url('/font/ggsans-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans Normal';
+    src: url('/font/ggsans-BoldItalic.eot');
+    src: local('gg sans Bold Italic'), local('ggsans-BoldItalic'),
+        url('/font/ggsans-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-BoldItalic.woff2') format('woff2'),
+        url('/font/ggsans-BoldItalic.woff') format('woff'),
+        url('/font/ggsans-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans';
+    src: url('/font/ggsans-Semibold.eot');
+    src: local('gg sans SemiBold'), local('ggsans-Semibold'),
+        url('/font/ggsans-Semibold.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-Semibold.woff2') format('woff2'),
+        url('/font/ggsans-Semibold.woff') format('woff'),
+        url('/font/ggsans-Semibold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans';
+    src: url('/font/ggsans-Medium.eot');
+    src: local('gg sans Medium'), local('ggsans-Medium'),
+        url('/font/ggsans-Medium.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-Medium.woff2') format('woff2'),
+        url('/font/ggsans-Medium.woff') format('woff'),
+        url('/font/ggsans-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans';
+    src: url('/font/ggsans-ExtraBold.eot');
+    src: local('gg sans ExtraBold'), local('ggsans-ExtraBold'),
+        url('/font/ggsans-ExtraBold.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-ExtraBold.woff2') format('woff2'),
+        url('/font/ggsans-ExtraBold.woff') format('woff'),
+        url('/font/ggsans-ExtraBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans';
+    src: url('/font/ggsans-ExtraBoldItalic.eot');
+    src: local('gg sans ExtraBold Italic'), local('ggsans-ExtraBoldItalic'),
+        url('/font/ggsans-ExtraBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-ExtraBoldItalic.woff2') format('woff2'),
+        url('/font/ggsans-ExtraBoldItalic.woff') format('woff'),
+        url('/font/ggsans-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans Normal';
+    src: url('/font/ggsans-Normal.eot');
+    src: local('gg sans Normal'), local('ggsans-Normal'),
+        url('/font/ggsans-Normal.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-Normal.woff2') format('woff2'),
+        url('/font/ggsans-Normal.woff') format('woff'),
+        url('/font/ggsans-Normal.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gg sans Normal';
+    src: url('/font/ggsans-NormalItalic.eot');
+    src: local('gg sans Normal Italic'), local('ggsans-NormalItalic'),
+        url('/font/ggsans-NormalItalic.eot?#iefix') format('embedded-opentype'),
+        url('/font/ggsans-NormalItalic.woff2') format('woff2'),
+        url('/font/ggsans-NormalItalic.woff') format('woff'),
+        url('/font/ggsans-NormalItalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
