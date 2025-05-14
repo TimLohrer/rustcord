@@ -6,20 +6,22 @@
     $: activeGuild = $GUILDS.find(g => g.id === $ACTIVE_GUILD_ID);
 </script>
 
-<div class="title-bar">
-    <div class="active-guild">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="title-bar" data-tauri-drag-region>
+    <div class="active-guild" data-tauri-drag-region>
         {#if $ACTIVE_GUILD_ID === 'HOME'}
-            <img src={DiscordLogo} alt="Discord Logo" style="height: 15px; border-radius: 0px;" />
-            <p>Direct Messages</p>
+            <img src={DiscordLogo} alt="Discord Logo" style="height: 15px; border-radius: 0px;" data-tauri-drag-region />
+            <p data-tauri-drag-region>Direct Messages</p>
         {:else}
-            <div class="icon" class:no-icon={!activeGuild?.icon}>
+            <div class="icon" class:no-icon={!activeGuild?.icon} data-tauri-drag-region>
                 {#if activeGuild?.icon}
-                    <img src={DiscordAssetUtils.getGuildIconUrl($ACTIVE_GUILD_ID, activeGuild?.icon)} alt={activeGuild?.name} />
+                    <img src={DiscordAssetUtils.getGuildIconUrl($ACTIVE_GUILD_ID, activeGuild?.icon)} alt={activeGuild?.name} data-tauri-drag-region />
                 {:else}
-                    <p>{activeGuild?.name.split('')[0].toUpperCase()}</p>
+                    <p data-tauri-drag-region>{activeGuild?.name.split('')[0].toUpperCase()}</p>
                 {/if}
             </div>
-            <p>{activeGuild?.name}</p>
+            <p data-tauri-drag-region>{activeGuild?.name}</p>
         {/if}
     </div>
 </div>
@@ -38,6 +40,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        pointer-events: none;
         gap: 10px;
     }
 
