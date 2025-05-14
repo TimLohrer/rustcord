@@ -7,5 +7,5 @@ export const ACTIVE_GUILD_ID = writable("HOME");
 
 export const VOICE_STATE: Writable<'default' | 'mute' | 'deaf'> = writable('default');
 
-export const GUILDS = writable([]);
+export const GUILDS: Writable<any[]> = writable([]);
 export const FRIENDS = writable([]);

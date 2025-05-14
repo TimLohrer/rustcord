@@ -1,9 +1,11 @@
 <script lang="ts">
+	import GuildSidebar from './../lib/components/GuildSidebar.svelte';
 	import ActiveUserCard from './../lib/components/home/ActiveUserCard.svelte';
 	import { loadDebugToken, token_login } from "$lib/api/login";
   	import { loadSettings } from "$lib/api/settings";
 	import { ACTIVE_GUILD_ID, ACTIVE_USER, TOKEN } from "$lib/stores/stateStore";
 	import { onMount } from "svelte";
+  	import { loadGuilds } from '$lib/api/guilds';
 
 	onMount(async () => {
 		await loadDebugToken();
@@ -12,6 +14,7 @@
 			if (newToken) {
 				await token_login($TOKEN);
 				await loadSettings();
+				await loadGuilds();
 			}
 		});
 	});
@@ -27,7 +30,7 @@
 				<div class="guild-and-dm-channel-list-wrapper">
 					<div class="lists-wrapper">
 						<div class="guild-list">
-			
+							<GuildSidebar />
 						</div>
 						{#if $ACTIVE_GUILD_ID === 'HOME'}
 							<div class="dm-channels">
@@ -59,12 +62,14 @@
 		flex-direction: column;
 		height: 100%;
 		width: 100%;
+		overflow: hidden;
 		background-color: var(--secondary-background);
 	}
 
 	.title-bar {
 		display: flex;
-		height: 45px;
+		min-height: 35px;
+		width: 100%;
 	}
 
 	.app-content {
@@ -84,13 +89,14 @@
 	.lists-wrapper {
 		display: flex;
 		flex-direction: row;
-		height: 100%;
+		height: calc(100% - 75px - 45px);
 	}
 
 	.guild-list {
 		display: flex;
 		flex-direction: column;
 		width: 85px;
+		height: 100%;
 	}
 
 	.guild-channels {

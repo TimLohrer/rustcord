@@ -1,6 +1,7 @@
 <script lang="ts">
     import { ACTIVE_USER, VOICE_STATE } from "$lib/stores/stateStore";
     import { hexToRGBAString } from "$lib/utils/colorUtils";
+  import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
     import { DiscordIcons } from "$lib/utils/iconUtils";
     import { onMount, tick } from "svelte";
 
@@ -115,7 +116,7 @@
 
 <div class="active-user-card">
     <div class="user">
-        <img src={`https://cdn.discordapp.com/avatars/${$ACTIVE_USER.id}/${$ACTIVE_USER.avatar}.webp?size=80`} alt="Avatar" class="avatar">
+        <img src={DiscordAssetUtils.getUserAvatarUrl($ACTIVE_USER.id, $ACTIVE_USER.avatar)} alt="Avatar" class="avatar">
         <div class="user-info">
             <p class="name">{$ACTIVE_USER.global_name}</p>
             <div class="status-username-wrapper">
