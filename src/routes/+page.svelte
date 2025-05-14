@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TitleBar from './../lib/components/TitleBar.svelte';
 	import GuildSidebar from './../lib/components/GuildSidebar.svelte';
 	import ActiveUserCard from './../lib/components/home/ActiveUserCard.svelte';
 	import { loadDebugToken, token_login } from "$lib/api/login";
@@ -24,7 +25,7 @@
 	{#if $ACTIVE_USER}
 		<div class="app-root">
 			<div class="title-bar" data-tauri-drag-region>
-
+				<TitleBar />
 			</div>
 			<div class="app-content">
 				<div class="guild-and-dm-channel-list-wrapper">
