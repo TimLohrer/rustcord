@@ -6,11 +6,11 @@ import { get } from "svelte/store";
 export async function loadDMChannels(): Promise<void> {
     try {
         let channels: any[] = await invoke("get_discord_dm_channels", { token: get(TOKEN) });
-        channels = channels.filter((channel: any) => channel.last_message_id !== null);
 
         channels.sort((a: any, b: any) => {
-            const lastMessageDateA = SnowflakeUtils.snowflakeToDate(a.last_message_id);
-            const lastMessageDateB = SnowflakeUtils.snowflakeToDate(b.last_message_id);
+            // Sort by last_message_id or channel id if last_message_id is not present
+            const lastMessageDateA = SnowflakeUtils.snowflakeToDate(a.last_message_id ?? a.id);
+            const lastMessageDateB = SnowflakeUtils.snowflakeToDate(b.last_message_id ?? a.id);
 
             return lastMessageDateB.getTime() - lastMessageDateA.getTime();
         });

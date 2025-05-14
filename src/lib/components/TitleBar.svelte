@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { ACTIVE_GUILD_ID, GUILDS } from "$lib/stores/stateStore";
+    import { ACTIVE_CHANNEL_ID, ACTIVE_GUILD_ID, GUILDS } from "$lib/stores/stateStore";
     import DiscordLogo from '$lib/assets/logo_white.png';
     import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
+    import { DiscordIcons } from "$lib/utils/iconUtils";
 
     $: activeGuild = $GUILDS.find(g => g.id === $ACTIVE_GUILD_ID);
 </script>
@@ -11,8 +12,22 @@
 <div class="title-bar" data-tauri-drag-region>
     <div class="active-guild" data-tauri-drag-region>
         {#if $ACTIVE_GUILD_ID === 'HOME'}
-            <img src={DiscordLogo} alt="Discord Logo" style="height: 15px; border-radius: 0px;" data-tauri-drag-region />
-            <p data-tauri-drag-region>Direct Messages</p>
+            {#if $ACTIVE_CHANNEL_ID === 'HOME'}
+                <div class="icon">
+                    {@html DiscordIcons.withColor(DiscordIcons.HOME, 'var(--secondary-text)')}
+                </div>
+                <p data-tauri-drag-region>Home</p>    
+            {:else if $ACTIVE_CHANNEL_ID === 'FRIENDS'}
+                <div class="icon">
+                    {@html DiscordIcons.withColor(DiscordIcons.FRIENDS, 'var(--secondary-text)')}
+                </div>
+                <p data-tauri-drag-region>Friends</p>    
+            {:else}
+                <div class="icon">
+                    {@html DiscordIcons.withColor(DiscordIcons.DISCORD, 'var(--secondary-text)')}
+                </div>
+                <p data-tauri-drag-region>Direct Messages</p>
+            {/if}
         {:else}
             <div class="icon" class:no-icon={!activeGuild?.icon} data-tauri-drag-region>
                 {#if activeGuild?.icon}
@@ -66,13 +81,13 @@
 
     .active-guild .icon p {
         font-size: 14px;
-        color: var(--white);
+        color: var(--secondary-text);
         font-weight: 500;
     }
 
     .active-guild p {
         font-size: 16px;
-        color: var(--white);
-        font-weight: 500;
+        color: var(--secondary-text);
+        font-weight: 600;
     }
 </style>

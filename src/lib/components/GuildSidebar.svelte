@@ -31,7 +31,7 @@
                 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                 <div class="guild" class:no-icon={!$GUILDS.find(g => g.id === guild_id)?.icon} on:click={() => ACTIVE_GUILD_ID.set(guild_id)} on:mouseover={() => hoveredGuildId = guild_id} on:mouseleave={() => hoveredGuildId = null}>
                     {#if $GUILDS.find(g => g.id === guild_id)?.icon}
-                        <img src={DiscordAssetUtils.getGuildIconUrl(guild_id, $GUILDS.find(g => g.id === guild_id)?.icon, undefined, hoveredGuildId === guild_id)} alt={$GUILDS.find(g => g.id === guild_id)?.name} />
+                        <img src={DiscordAssetUtils.getGuildIconUrl(guild_id, $GUILDS.find(g => g.id === guild_id)?.icon, undefined, $ACTIVE_GUILD_ID === guild_id || hoveredGuildId === guild_id)} alt={$GUILDS.find(g => g.id === guild_id)?.name} />
                     {:else}
                         <p>{$GUILDS.find(g => g.id === guild_id)?.name.split(' ').map((w: string) => w.split('')[0].toUpperCase()).join('')}</p>
                     {/if}
@@ -41,7 +41,9 @@
     {/each}
     <div class="guild-wrapper button" class:active={$ACTIVE_GUILD_ID === 'HOME'}>
         <div class="guild" class:active={$ACTIVE_GUILD_ID === 'HOME'} on:click={() => ACTIVE_GUILD_ID.set('HOME')}>
-            {@html DiscordIcons.withColor(DiscordIcons.CIRCLE_ADD, 'var(--white)')}
+            <div class="add-circle-icon-wrapper">
+                {@html DiscordIcons.withColor(DiscordIcons.CIRCLE_ADD, 'var(--white)')}
+            </div>
         </div>
     </div>
 </div>
@@ -54,7 +56,7 @@
         align-items: start;
         flex-direction: column;
         gap: 7.5px;
-        margin-bottom: 7.5px;
+        padding-bottom: 7.5px;
         overflow-y: scroll;
     }
 
@@ -64,6 +66,7 @@
     }
 
     .guilds-sidebar .guild-wrapper {
+        /* full width - right side spacing */
         width: calc(100% - 17.5px);
         display: flex;
         justify-content: space-between;
@@ -81,7 +84,7 @@
     }
 
     .guilds-sidebar .guild-wrapper .home-button img {
-        height: 20px;
+        height: 17.5px;
         margin: 15px 0 15px 0;
     }
 
@@ -92,15 +95,15 @@
     .guilds-sidebar .divider {
         display: flex;
         width: 45%;
-        min-height: 2px;
+        min-height: 1px;
         align-self: center;
         background-color: var(--border-color);
     }
 
     .guilds-sidebar .guild-wrapper .guild {
-        width: 50px;
-        height: 50px;
-        border-radius: 15px;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -123,18 +126,27 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 15px;
+        border-radius: 10px;
+    }
+
+    .guilds-sidebar .guild .add-circle-icon-wrapper {
+        max-width: 20px;
+        max-height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .guilds-sidebar .pill-slot {
         width: 5px;
         display: flex;
-        min-height: 50px;
+        min-height: 40px;
         flex-direction: column;
         justify-content: center;
     }
 
     .guilds-sidebar .pill-slot .pill {
+        transform: scale(0);
         height: 0px;
         width: 5px;
         border-top-right-radius: 10px;
@@ -144,10 +156,12 @@
     }
 
     .guilds-sidebar .guild-wrapper:not(.active):hover .pill-slot .pill {
-        height: 25px;
+        height: 20px;
+        transform: scale(1);
     }
 
     .guilds-sidebar .pill-slot .pill.active {
-        height: 45px;
+        height: 40px;
+        transform: scale(1);
     }
 </style>

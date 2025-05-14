@@ -4,6 +4,7 @@ export const TOKEN = writable("");
 export const SETTINGS: Writable<null | any> = writable(null);
 export const ACTIVE_USER: Writable<null | any> = writable(null);
 export const ACTIVE_GUILD_ID = writable("HOME");
+export const ACTIVE_CHANNEL_ID = writable("HOME");
 
 export const VOICE_STATE: Writable<'default' | 'mute' | 'deaf'> = writable('default');
 

@@ -205,6 +205,8 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        white-space: nowrap;
+        width: 140px;
         transition-duration: 200ms;
     }
     

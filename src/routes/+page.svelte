@@ -1,4 +1,5 @@
 <script lang="ts">
+	import DMChannelList from './../lib/components/home/DMChannelList.svelte';
 	import TitleBar from './../lib/components/TitleBar.svelte';
 	import GuildSidebar from './../lib/components/GuildSidebar.svelte';
 	import ActiveUserCard from './../lib/components/home/ActiveUserCard.svelte';
@@ -37,7 +38,7 @@
 						</div>
 						{#if $ACTIVE_GUILD_ID === 'HOME'}
 							<div class="dm-channels">
-			
+								<DMChannelList />
 							</div>
 						{:else}
 							<div class="guild-channels">
@@ -85,28 +86,29 @@
 	.guild-and-dm-channel-list-wrapper {
 		display: flex;
 		flex-direction: column;
-		width: max-content;
+		width: 375px;
 		height: 100%;
 	}
 
 	.lists-wrapper {
 		display: flex;
 		flex-direction: row;
+		/* full height - actuve user card height - title bar height */
 		height: calc(100% - 75px - 45px);
 	}
 
 	.guild-list {
 		display: flex;
 		flex-direction: column;
-		width: 85px;
+		min-width: 75px;
 		height: 100%;
 	}
 
 	.guild-channels {
 		display: flex;
 		flex-direction: column;
-		width: 385px;
-		border-top-left-radius: 20px;
+		width: 100%;
+		border-top-left-radius: 10px;
 		border-left: 1px solid var(--border-color);
 		border-top: 1px solid var(--border-color);
 	}
@@ -114,14 +116,15 @@
 	.dm-channels {
 		display: flex;
 		flex-direction: column;
-		width: 385px;
-		border-top-left-radius: 20px;
+		width: 100%;
+		border-top-left-radius: 10px;
 		border-left: 1px solid var(--border-color);
 		border-top: 1px solid var(--border-color);
 	}
 
 	.current-user-card {
 		display: flex;
+		/* full width - 10px both sides margin */
 		width: calc(100% - 20px);
 		height: 75px;
 		border: 1px solid var(--border-color);

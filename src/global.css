@@ -5,8 +5,11 @@ body {
   font-weight: 500;
 
   --primary-background: 	#313338;
-  --secondary-background: #2b2d31;
+  --primary-background-hover: #3d3e43;
+    --secondary-background: #2c2d32;
   --secondary-background-hover: #2e3035;
+  --button-background: #393a3f;
+    --button-background-hover: #414249;
   --discord-dark: #1e1f22;
   --discord-darker: #111214;
   --blurple: #5865F2;
@@ -16,7 +19,7 @@ body {
   --fuchsia: #EB459E;
   --border-color: #3d3d42;
   --primary-text: #f2f3f5;
-  --secondary-text: #b3b5b9;
+  --secondary-text: #adaeb3;
   --white: #ffffff;
   --black: #000000;
   
