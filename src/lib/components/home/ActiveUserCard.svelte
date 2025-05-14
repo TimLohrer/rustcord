@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { ACTIVE_USER, VOICE_STATE } from "$lib/stores/stateStore";
+    import { ACTIVE_USER, SETTINGS, VOICE_STATE } from "$lib/stores/stateStore";
     import { hexToRGBAString } from "$lib/utils/colorUtils";
-  import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
+    import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
     import { DiscordIcons } from "$lib/utils/iconUtils";
     import { onMount, tick } from "svelte";
 
@@ -120,21 +120,25 @@
         <div class="user-info">
             <p class="name">{$ACTIVE_USER.global_name}</p>
             <div class="status-username-wrapper">
-                <p class="status">STatus LOOLOLOLol</p>
+                <div class="status-wrapper">
+                    <img src={DiscordAssetUtils.getEmojiUrl($SETTINGS?.custom_status.emoji_id, 64, true)} alt={`Emoji: ${$SETTINGS?.custom_status.emoji_name}`} class="status-icon">
+                    <p class="status">{$SETTINGS?.custom_status.text}</p>
+                </div>
                 <p class="username">{$ACTIVE_USER.username}</p>
             </div>
         </div>
     </div>
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_mouse_events_have_key_events -->
     <div class="buttons">
-        <div class="button mute-button" on:click={mute} on:mouseenter={muteHover} on:mouseleave={muteHoverEnd}>
+        <div class="button mute-button" on:click={mute} on:mouseover={muteHover} on:mouseleave={muteHoverEnd}>
             {@html muteIcon}
         </div>
-        <div class="button deaf-button" on:click={deaf} on:mouseenter={deafHover} on:mouseleave={deafHoverEnd}>
+        <div class="button deaf-button" on:click={deaf} on:mouseover={deafHover} on:mouseleave={deafHoverEnd}>
             {@html deafIcon}
         </div>
-        <div class="button settings-button" on:click={openSettings} on:mouseenter={settingsHover} on:mouseleave={settingsHoverEnd}>
+        <div class="button settings-button" on:click={openSettings} on:mouseover={settingsHover} on:mouseleave={settingsHoverEnd}>
             {@html settingsIcon}
         </div>
     </div>
@@ -164,7 +168,7 @@
         background-color: var(--border-color);
     }
 
-    .active-user-card:hover .status, .active-user-card:hover .username {
+    .active-user-card:hover .status-wrapper, .active-user-card:hover .username {
         transform: translateY(-25px);
     }
     
@@ -197,13 +201,26 @@
         overflow: hidden;
     }
 
-    .active-user-card .user .user-info .status-username-wrapper .status {
+    .active-user-card .user .user-info .status-username-wrapper .status-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        transition-duration: 200ms;
+    }
+    
+    .active-user-card .user .user-info .status-username-wrapper .status-wrapper .status {
         font-size: 0.8rem;
         color: var(--secondary-text);
         font-weight: 600;
-        transition-duration: 200ms;
     }
 
+    .active-user-card .user .user-info .status-username-wrapper .status-icon {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+        border-radius: 50%;
+    }
+    
     .active-user-card .user .user-info .status-username-wrapper .username {
         font-size: 0.8rem;
         color: var(--secondary-text);

@@ -1,16 +1,19 @@
 <script lang="ts">
     import DiscordLogo from '$lib/assets/logo_white.png';
-    import { ACTIVE_GUILD_ID, GUILDS } from '$lib/stores/stateStore';
+    import { ACTIVE_GUILD_ID, GUILDS, SETTINGS } from '$lib/stores/stateStore';
     import { DiscordAssetUtils } from '$lib/utils/discordAssetUtils';
+    import { DiscordIcons } from '$lib/utils/iconUtils';
+
+    let hoveredGuildId: string | null = null;
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="guilds-sidebar">
-    <div class="guild-wrapper" class:active={$ACTIVE_GUILD_ID === 'HOME'}>
+    <div class="guild-wrapper visible" class:active={$ACTIVE_GUILD_ID === 'HOME'}>
         <div class="pill-slot">
             <!-- svelte-ignore element_invalid_self_closing_tag -->
-            <div class="pill" class:active={$ACTIVE_GUILD_ID === 'HOME'} />
+            <div class="pill visible" class:active={$ACTIVE_GUILD_ID === 'HOME'} />
         </div>
         <div class="home-button guild" class:active={$ACTIVE_GUILD_ID === 'HOME'} on:click={() => ACTIVE_GUILD_ID.set('HOME')}>
             <img src={DiscordLogo} alt="Discord Logo" />
@@ -18,27 +21,29 @@
     </div>
     <!-- svelte-ignore element_invalid_self_closing_tag -->
     <div class="divider" />
-    {#each $GUILDS as guild}
-        <div class="guild-wrapper" class:active={$ACTIVE_GUILD_ID === guild.id}>
-            <div class="pill-slot">
-                <!-- svelte-ignore element_invalid_self_closing_tag -->
-                <div class="pill" class:active={$ACTIVE_GUILD_ID === guild.id} />
+    {#each $SETTINGS?.guild_folders as folder}
+        {#each folder.guild_ids as guild_id}
+            <div class="guild-wrapper" class:active={$ACTIVE_GUILD_ID === guild_id}>
+                <div class="pill-slot">
+                    <!-- svelte-ignore element_invalid_self_closing_tag -->
+                    <div class="pill" class:active={$ACTIVE_GUILD_ID === guild_id} />
+                </div>
+                <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+                <div class="guild" class:no-icon={!$GUILDS.find(g => g.id === guild_id)?.icon} on:click={() => ACTIVE_GUILD_ID.set(guild_id)} on:mouseover={() => hoveredGuildId = guild_id} on:mouseleave={() => hoveredGuildId = null}>
+                    {#if $GUILDS.find(g => g.id === guild_id)?.icon}
+                        <img src={DiscordAssetUtils.getGuildIconUrl(guild_id, $GUILDS.find(g => g.id === guild_id)?.icon, undefined, hoveredGuildId === guild_id)} alt={$GUILDS.find(g => g.id === guild_id)?.name} />
+                    {:else}
+                        <p>{$GUILDS.find(g => g.id === guild_id)?.name.split(' ').map((w: string) => w.split('')[0].toUpperCase()).join('')}</p>
+                    {/if}
+                </div>
             </div>
-            <div class="guild" on:click={() => ACTIVE_GUILD_ID.set(guild.id)}>
-                <img src={DiscordAssetUtils.getGuildIconUrl(guild.id, guild.icon)} alt={guild.name} />
-            </div>
-        </div>
+        {/each}
     {/each}
-    <!-- <div class="guild-wrapper" class:active={$ACTIVE_GUILD_ID === 'HOME'}>
-        <div class="home-button guild" class:active={$ACTIVE_GUILD_ID === 'HOME'} on:click={() => ACTIVE_GUILD_ID.set('HOME')}>
-            <img src={DiscordLogo} alt="Discord Logo" />
+    <div class="guild-wrapper button" class:active={$ACTIVE_GUILD_ID === 'HOME'}>
+        <div class="guild" class:active={$ACTIVE_GUILD_ID === 'HOME'} on:click={() => ACTIVE_GUILD_ID.set('HOME')}>
+            {@html DiscordIcons.withColor(DiscordIcons.CIRCLE_ADD, 'var(--white)')}
         </div>
     </div>
-    <div class="guild-wrapper" class:active={$ACTIVE_GUILD_ID === 'HOME'}>
-        <div class="home-button guild" class:active={$ACTIVE_GUILD_ID === 'HOME'} on:click={() => ACTIVE_GUILD_ID.set('HOME')}>
-            <img src={DiscordLogo} alt="Discord Logo" />
-        </div>
-    </div> -->
 </div>
 
 <style>
@@ -49,6 +54,7 @@
         align-items: start;
         flex-direction: column;
         gap: 7.5px;
+        margin-bottom: 7.5px;
         overflow-y: scroll;
     }
 
@@ -65,11 +71,16 @@
         transition-duration: 200ms;
     }
 
-    .guilds-sidebar .home-button {
+    .guilds-sidebar .guild-wrapper.button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .guilds-sidebar .home-button, .guilds-sidebar .button .guild {
         background-color: var(--primary-background);
     }
 
-    .guilds-sidebar .home-button img {
+    .guilds-sidebar .guild-wrapper .home-button img {
         height: 20px;
         margin: 15px 0 15px 0;
     }
@@ -86,7 +97,7 @@
         background-color: var(--border-color);
     }
 
-    .guilds-sidebar .guild {
+    .guilds-sidebar .guild-wrapper .guild {
         width: 50px;
         height: 50px;
         border-radius: 15px;
@@ -95,6 +106,17 @@
         align-items: center;
         cursor: pointer;
         transition-duration: 200ms;
+    }
+
+    .guilds-sidebar .guild-wrapper .guild.no-icon {
+        background-color: var(--primary-background);
+        color: var(--white);
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .guilds-sidebar .guild-wrapper.button .guild:hover, .guilds-sidebar .guild-wrapper .guild.no-icon:hover, .guilds-sidebar .guild-wrapper.active .guild.no-icon {
+        background-color: var(--blurple);
     }
 
     .guilds-sidebar .guild:not(.home-button) img {
