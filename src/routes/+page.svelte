@@ -7,6 +7,7 @@
 	import { ACTIVE_GUILD_ID, ACTIVE_USER, TOKEN } from "$lib/stores/stateStore";
 	import { onMount } from "svelte";
   	import { loadGuilds } from '$lib/api/guilds';
+  	import { loadDMChannels } from '$lib/api/channels';
 
 	onMount(async () => {
 		await loadDebugToken();
@@ -15,6 +16,7 @@
 			if (newToken) {
 				await token_login($TOKEN);
 				await loadSettings();
+				await loadDMChannels();
 				await loadGuilds();
 			}
 		});
@@ -24,7 +26,7 @@
 <div class="rustcord">
 	{#if $ACTIVE_USER}
 		<div class="app-root">
-			<div class="title-bar" data-tauri-drag-region>
+			<div class="title-bar">
 				<TitleBar />
 			</div>
 			<div class="app-content">

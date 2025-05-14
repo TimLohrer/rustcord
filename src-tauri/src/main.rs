@@ -50,6 +50,15 @@ async fn get_discord_settings(token: String) -> Result<Value, String> {
 }
 
 #[tauri::command]
+async fn get_discord_dm_channels(token: String) -> Result<Value, String> {
+    if VERBOSE {
+        println!("Called get_discord_dm_channels");
+    }
+    
+    DiscordApi::get_dm_channels(DiscordApi::get_authorization_header(token, BOT_USER)).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 async fn get_discord_guilds(token: String) -> Result<Value, String> {
     if VERBOSE {
         println!("Called get_discord_guilds");
@@ -112,6 +121,7 @@ async fn main() {
             get_debug_token,
             discord_token_login,
             get_discord_settings,
+            get_discord_dm_channels,
             get_discord_guilds,
             get_discord_guild,
             get_discord_guild_channels,

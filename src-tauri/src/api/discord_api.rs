@@ -50,7 +50,19 @@ impl DiscordApi {
         let json = res.json().await.unwrap();
         Ok(json)
     }
-
+    
+    pub async fn get_dm_channels(token: String) -> Result<Value, reqwest::Error> {
+        let client = reqwest::Client::new();
+        let res = client
+            .get(format!("{}/users/@me/channels", DiscordApi::get_api_base()))
+            .header("Authorization", token)
+            .send()
+            .await?
+            .error_for_status()?;
+        let json = res.json().await.unwrap();
+        Ok(json)
+    }
+    
     pub async fn get_guilds(token: String) -> Result<Value, reqwest::Error> {
         let client = reqwest::Client::new();
         let res = client
