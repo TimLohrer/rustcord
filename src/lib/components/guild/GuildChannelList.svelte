@@ -36,10 +36,31 @@
 <div class="guild-channel-list">
     <div class="banner-header">
         <div class="guild-name">
+            <div class="badge-wrapper">
+                {#if guild.features.includes('COMMUNITY')}
+                    <div class="verify-icon-wrapper">
+                        {@html DiscordIcons.withColor(DiscordIcons.VERIFYED_BADGE, guild.features.includes('PARTNERED') ? 'var(--blurple)' : guild.features.includes('VERIFIED') ? 'var(--green)' : guild.premium_tier > 0 ? 'url(#nitro)' : 'var(--white)')}
+                    </div>
+                    <div class="verify-icon-detail-wrapper">
+                        {#if guild.features.includes('PARTNERED')}
+                            {@html DiscordIcons.withColor(DiscordIcons.PARTNER, 'var(--white)')}
+                        {:else if guild.features.includes('VERIFIED')}
+                            {@html DiscordIcons.withColor(DiscordIcons.CHECKMARK, 'var(--white)')}
+                        {:else if guild.features.includes('DISCOVERABLE')}
+                            {@html DiscordIcons.withColor(DiscordIcons.GLOBE, guild.premium_tier > 0 ? 'var(--white)' : 'var(--primary-background)')}
+                        {:else}
+                            {@html DiscordIcons.withColor(DiscordIcons.HOME, guild.premium_tier > 0 ? 'var(--white)' : 'var(--primary-background)')}
+                        {/if}
+                    </div>
+                {/if}
+            </div>
             <p class="name">{guild.name}</p>
+            <div class="icon-wrapper">
+                {@html DiscordIcons.withColor(DiscordIcons.CHEVRON, 'var(--white)')}
+            </div>
         </div>
         {#if guild.banner}
-            <img src={DiscordAssetUtils.getGuildBannerUrl(guild.id, guild.banner, 512)} alt="Guild Banner" class="banner" style={`opacity: ${scrollIndex <= 0 ? 1 : 1 - (scrollIndex / 100) };`} />
+            <img src={DiscordAssetUtils.getGuildBannerUrl(guild.id, guild.banner, 512, guild.features.includes('ANIMATED_BANNER'))} alt="Guild Banner" class="banner" style={`opacity: ${scrollIndex <= 0 ? 1 : 1 - (scrollIndex / 100) };`} />
         {/if}
     </div>
     <div class="guild-channels" on:scroll={(e) => scrollIndex = e.target!.scrollTop} style={`padding-top: ${guild.banner ? 125 : 0}px;`}>
@@ -173,8 +194,10 @@
         align-items: center;
         backdrop-filter: blur(1px) brightness(0.975);
         border-top-left-radius: 10px;
+        gap: 5px;
         width: 100%;
         overflow: hidden;
+        cursor: pointer;
         transition-duration: 200ms;
     }
 
@@ -182,11 +205,47 @@
         backdrop-filter: blur(15px) brightness(0.9);
     }
 
+    .banner-header .guild-name .badge-wrapper {
+        display: flex;
+        width: 22.5px;
+        height: 22.5px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .banner-header .guild-name .badge-wrapper .verify-icon-wrapper {
+        display: flex;
+        max-width: 20px;
+        max-height: 20px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .banner-header .guild-name .badge-wrapper .verify-icon-detail-wrapper {
+        position: absolute;
+        display: flex;
+        width: 12.5px;
+        height: 12.5px;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+
     .banner-header .guild-name .name {
         font-size: 18px;
         font-weight: 700;
         color: white;
         white-space: nowrap;
+    }
+
+    .banner-header .guild-name .icon-wrapper {
+        display: flex;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        transform: rotate(90deg);
     }
 
     .guild-channels {
