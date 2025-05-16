@@ -1,4 +1,5 @@
 <script lang="ts">
+	import GuildChannelList from './../lib/components/guild/GuildChannelList.svelte';
 	import DMChannelList from './../lib/components/home/DMChannelList.svelte';
 	import TitleBar from './../lib/components/TitleBar.svelte';
 	import GuildSidebar from './../lib/components/GuildSidebar.svelte';
@@ -42,7 +43,7 @@
 							</div>
 						{:else}
 							<div class="guild-channels">
-								
+								<GuildChannelList />
 							</div>
 						{/if}
 					</div>

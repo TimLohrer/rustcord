@@ -69,7 +69,7 @@
                         {#if channel.type === 1}
                             <!-- <p class="status">HAHA LOL XD</p> -->
                         {:else if channel.type === 3}
-                            <p class="status">{channel.recipients.length} Member{channel.recipients.length > 1 ? 's' : ''}</p>
+                            <p class="status">{channel.recipients.length + 1} Member{channel.recipients.length + 1 > 1 ? 's' : ''}</p>
                         {/if}
                         <!-- <p class="status"></p> -->
                     </div>
@@ -194,12 +194,12 @@
     }
 
     .dm-channels::-webkit-scrollbar {
-        width: 3px;
+        width: 4px;
         background-color: transparent;
     }
 
     .dm-channels::-webkit-scrollbar-thumb {
-        background-color: var(--border-color);
+        background-color: var(--scrollbar-color);
         border-radius: 5px;
     }
 

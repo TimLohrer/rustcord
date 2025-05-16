@@ -20,6 +20,7 @@ body {
   --border-color: #3d3d42;
   --primary-text: #f2f3f5;
   --secondary-text: #adaeb3;
+  --scrollbar-color: #74757e;
   --white: #ffffff;
   --black: #000000;
   
@@ -28,6 +29,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+-webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Standard Syntax */
 }
 
 .emoji {

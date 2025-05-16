@@ -12,3 +12,21 @@ export async function loadGuilds() {
         GUILDS.set([]);
     }
 }
+
+export async function loadGuild(guildId: string) {
+    try {
+        const guild: any = await invoke('get_discord_guild', { token: get(TOKEN), guildId });
+        GUILDS.update(guilds => {
+            const index = guilds.findIndex(g => g.id === guildId);
+            if (index !== -1) {
+                guilds[index] = guild;
+            } else {
+                guilds.push(guild);
+            }
+            return guilds;
+        });
+        console.log("Guild loaded:", guild);
+    } catch (error) {
+        console.error("Error loading guild:", error);
+    }
+}

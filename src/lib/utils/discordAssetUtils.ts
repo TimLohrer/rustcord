@@ -14,6 +14,10 @@ export class DiscordAssetUtils {
         return `https://cdn.discordapp.com/icons/${guildId}/${iconHash}.webp?size=${size}&animated=${animated}`;
     }
 
+    static getGuildBannerUrl(guildId: string, bannerHash: string, size: number = 128, animated: boolean = false): string {
+        return `https://cdn.discordapp.com/banners/${guildId}/${bannerHash}.webp?size=${size}&animated=${animated}`;
+    }
+
     static getChannelIconUrl(channelId: string, iconHash: string, size: number = 128, animated: boolean = false): string {
         return `https://cdn.discordapp.com/channel-icons/${channelId}/${iconHash}.webp?size=${size}&animated=${animated}`;
     }
