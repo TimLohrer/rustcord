@@ -36,10 +36,10 @@
 <div class="guild-channel-list">
     <div class="banner-header">
         <div class="guild-name">
-            <div class="badge-wrapper">
-                {#if guild.features.includes('COMMUNITY')}
+            {#if guild.features.includes('COMMUNITY') || guild.premium_tier > 0}
+                <div class="badge-wrapper">
                     <div class="verify-icon-wrapper">
-                        {@html DiscordIcons.withColor(DiscordIcons.VERIFYED_BADGE, guild.features.includes('PARTNERED') ? 'var(--blurple)' : guild.features.includes('VERIFIED') ? 'var(--green)' : guild.premium_tier > 0 ? 'url(#nitro)' : 'var(--white)')}
+                        {@html DiscordIcons.withColor(DiscordIcons.VERIFYED_BADGE, guild.features.includes('PARTNERED') ? 'var(--blurple)' : guild.features.includes('VERIFIED') ? 'var(--green)' : guild.features.includes('COMMUNITY') && guild.premium_tier > 0 ? 'url(#nitro)' : guild.features.includes('COMMUNITY') ? 'var(--white)' : 'var(--primary-background)')}
                     </div>
                     <div class="verify-icon-detail-wrapper">
                         {#if guild.features.includes('PARTNERED')}
@@ -48,12 +48,14 @@
                             {@html DiscordIcons.withColor(DiscordIcons.CHECKMARK, 'var(--white)')}
                         {:else if guild.features.includes('DISCOVERABLE')}
                             {@html DiscordIcons.withColor(DiscordIcons.GLOBE, guild.premium_tier > 0 ? 'var(--white)' : 'var(--primary-background)')}
-                        {:else}
+                        {:else if guild.features.includes('COMMUNITY')}
                             {@html DiscordIcons.withColor(DiscordIcons.HOME, guild.premium_tier > 0 ? 'var(--white)' : 'var(--primary-background)')}
+                        {:else if guild.premium_subscription_count > 0}
+                            {@html DiscordIcons.withColor(DiscordIcons.NITRO_GEM, 'var(--white)')}
                         {/if}
                     </div>
-                {/if}
-            </div>
+                </div>
+            {/if}
             <p class="name">{guild.name}</p>
             <div class="icon-wrapper">
                 {@html DiscordIcons.withColor(DiscordIcons.CHEVRON, 'var(--white)')}
