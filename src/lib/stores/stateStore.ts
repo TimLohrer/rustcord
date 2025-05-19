@@ -6,7 +6,7 @@ export const TOKEN = writable("");
 export const SETTINGS: Writable<null | any> = writable(null);
 export const ACTIVE_USER: Writable<null | any> = writable(null);
 export const ACTIVE_GUILD_ID = writable("HOME");
-export const ACTIVE_CHANNEL_ID = writable("HOME");
+export const ACTIVE_CHANNEL_ID: Writable<Record<string, string>> = writable({ "HOME": "HOME" });
 
 export const VOICE_STATE: Writable<'default' | 'mute' | 'deaf'> = writable('default');
 
@@ -24,3 +24,9 @@ ACTIVE_GUILD_ID.subscribe(async (guildId) => {
         await loadGuildChannels(guildId);
     }
 });
+
+export function setActiveChannelId(guidId: string, channelId: string) {
+    ACTIVE_CHANNEL_ID.update((prev) => {
+        return { ...prev, [guidId]: channelId };
+    });
+}

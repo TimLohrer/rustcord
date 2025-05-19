@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { ACTIVE_CHANNEL_ID, DM_CHANNELS } from "$lib/stores/stateStore";
+  import { ACTIVE_CHANNEL_ID, DM_CHANNELS, setActiveChannelId } from "$lib/stores/stateStore";
   import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
   import { DiscordIcons } from "$lib/utils/iconUtils";
   import DefaultDMGroupAvatar from "$lib/assets/default_dm_group_avatar.png";
 
   let hoveredChannelCloseButtonId: string | null = null;
   let hoveredChannelId: string | null = null;
+
+  $: activeChannelId = $ACTIVE_CHANNEL_ID['HOME'] ?? 'HOME';
 </script>
 
 <div class="dm-channel-list">
@@ -17,15 +19,15 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div class="pinned-buttons">
-        <div class="pinned-button" on:click={() => ACTIVE_CHANNEL_ID.set('HOME')} class:active={$ACTIVE_CHANNEL_ID === 'HOME'}>
+        <div class="pinned-button" on:click={() => setActiveChannelId('HOME', 'HOME')} class:active={activeChannelId === 'HOME'}>
             <div class="icon-wrapper">
-                {@html DiscordIcons.withColor(DiscordIcons.HOME, $ACTIVE_CHANNEL_ID === 'HOME' ? 'var(--white)' : 'var(--secondary-text)')}
+                {@html DiscordIcons.withColor(DiscordIcons.HOME, activeChannelId === 'HOME' ? 'var(--white)' : 'var(--secondary-text)')}
             </div>
             <p>Home</p>
         </div>
-        <div class="pinned-button" on:click={() => ACTIVE_CHANNEL_ID.set('FRIENDS')} class:active={$ACTIVE_CHANNEL_ID === 'FRIENDS'}>
+        <div class="pinned-button" on:click={() => setActiveChannelId('HOME', 'FRIENDS')} class:active={activeChannelId === 'FRIENDS'}>
             <div class="icon-wrapper">
-                {@html DiscordIcons.withColor(DiscordIcons.FRIENDS, $ACTIVE_CHANNEL_ID === 'FRIENDS' ? 'var(--white)' : 'var(--secondary-text)')}
+                {@html DiscordIcons.withColor(DiscordIcons.FRIENDS, activeChannelId === 'FRIENDS' ? 'var(--white)' : 'var(--secondary-text)')}
             </div>
             <p>Friends</p>
         </div>
@@ -43,17 +45,17 @@
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_mouse_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div class="dm-channel" class:active={$ACTIVE_CHANNEL_ID === channel.id} on:click={() => ACTIVE_CHANNEL_ID.set(channel.id)} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
+            <div class="dm-channel" class:active={activeChannelId === channel.id} on:click={() => setActiveChannelId('HOME', channel.id)} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
                 <div class="avatar-and-name">
                     {#if channel.type === 1}
-                        <img src={DiscordAssetUtils.getUserAvatarUrl(channel.recipients[0]?.id, channel.recipients[0]?.avatar, undefined, $ACTIVE_CHANNEL_ID === channel.id || hoveredChannelId === channel.id, channel.recipients[0]?.discriminator)} alt="">
+                        <img src={DiscordAssetUtils.getUserAvatarUrl(channel.recipients[0]?.id, channel.recipients[0]?.avatar, undefined, activeChannelId === channel.id || hoveredChannelId === channel.id, channel.recipients[0]?.discriminator)} alt="">
                     {:else if channel.type === 3}
                         {#if channel.icon}
                             <img src={DiscordAssetUtils.getChannelIconUrl(channel.id, channel.icon)} alt="">
                         {:else if channel.recipients.length > 1}
                             <div class="group-icon">
                                 {#each channel.recipients.slice(0, 2) as recipient}
-                                    <img src={DiscordAssetUtils.getUserAvatarUrl(recipient.id, recipient.avatar, undefined, $ACTIVE_CHANNEL_ID === channel.id || hoveredChannelId === channel.id, recipient.discriminator)} alt="">
+                                    <img src={DiscordAssetUtils.getUserAvatarUrl(recipient.id, recipient.avatar, undefined, activeChannelId === channel.id || hoveredChannelId === channel.id, recipient.discriminator)} alt="">
                                 {/each}
                             </div>
                         {:else}

@@ -19,7 +19,9 @@ export async function loadGuild(guildId: string) {
         GUILDS.update(guilds => {
             const index = guilds.findIndex(g => g.id === guildId);
             if (index !== -1) {
+                const permissions = guilds[index].permissions;
                 guilds[index] = guild;
+                guilds[index].permissions = permissions;
             } else {
                 guilds.push(guild);
             }

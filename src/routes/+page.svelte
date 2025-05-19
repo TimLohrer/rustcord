@@ -57,7 +57,7 @@
 			</div>
 		</div>
 	{:else}
-		<input type="text" placeholder="Your Token" on:change={(e) => token_login(e.target.value)}>
+		<input type="text" placeholder="Your Token" on:change={(e) => { const target = e.target as HTMLInputElement | null; if (target) token_login(target.value); }}>
 	{/if}
 </div>
 
@@ -87,7 +87,7 @@
 	.guild-and-dm-channel-list-wrapper {
 		display: flex;
 		flex-direction: column;
-		width: 375px;
+		width: 400px;
 		height: 100%;
 	}
 
@@ -108,7 +108,7 @@
 	.guild-channels {
 		display: flex;
 		flex-direction: column;
-		width: 100%;
+		width: calc(100% - 75px);
 		border-top-left-radius: 10px;
 		border-left: 1px solid var(--border-color);
 		border-top: 1px solid var(--border-color);

@@ -1,18 +1,20 @@
 <script lang="ts">
-    import { ACTIVE_CHANNEL_ID, ACTIVE_GUILD_ID, GUILDS } from "$lib/stores/stateStore";
+	import { PermissionFlags, PermissionUtils } from './../../utils/permissionUtils';
+    import { ACTIVE_CHANNEL_ID, ACTIVE_GUILD_ID, GUILDS, setActiveChannelId } from "$lib/stores/stateStore";
     import { ChannelType } from "$lib/types/channel";
     import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
     import { DiscordIcons } from "$lib/utils/iconUtils";
 
-    let hoveredChannelSettingsButtonId: string | null = null;
-    let hoveredChannelInviteButtonId: string | null = null;
     let hoveredChannelId: string | null = null;
 
-    let openCategories: string[] = [];
+    let closedCategories: Record<string, string[]> = {};
 
     let scrollIndex = 0;
 
     $: guild = $GUILDS.find(g => g.id === $ACTIVE_GUILD_ID);
+
+    $: activeChannelId = $ACTIVE_CHANNEL_ID[guild.id] ?? 'BROWSE_CHANNELS';
+
     $: standaloneChannels = guild.channels
         ?.filter((c: any) => c.parent_id === null && c.type !== 4)
         .sort((a: any, b: any) => a.position - b.position) ?? [];
@@ -65,42 +67,64 @@
             <img src={DiscordAssetUtils.getGuildBannerUrl(guild.id, guild.banner, 512, guild.features.includes('ANIMATED_BANNER'))} alt="Guild Banner" class="banner" style={`opacity: ${scrollIndex <= 0 ? 1 : 1 - (scrollIndex / 100) };`} />
         {/if}
     </div>
-    <div class="guild-channels" on:scroll={(e) => scrollIndex = e.target!.scrollTop} style={`padding-top: ${guild.banner ? 125 : 0}px;`}>
+    <div class="guild-channels" on:scroll={(e) => scrollIndex = (e.target as HTMLElement).scrollTop} style={`padding-top: ${guild.banner ? 125 : 0}px;`}>
         <div class="scroll-background" style={`0px 2px 6.5px 6.5px;`}>
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <div class="guild-channel" on:click={() => ACTIVE_CHANNEL_ID.set('EVENTS')} class:active={$ACTIVE_CHANNEL_ID === 'EVENTS'}>
-                <div class="icon-wrapper">
-                    {@html DiscordIcons.withColor(DiscordIcons.CALENDER, $ACTIVE_CHANNEL_ID === 'EVENTS' ? 'var(--white)' : 'var(--secondary-text)')}
+            {#if PermissionUtils.hasAnyPermission(guild.permissions, [PermissionFlags.ADMINISTRATOR, PermissionFlags.MANAGE_GUILD, PermissionFlags.CREATE_EVENTS])}
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <div class="guild-channel" on:click={() => setActiveChannelId(guild.id, 'EVENTS')} class:active={activeChannelId === 'EVENTS'}>
+                    <div class="icon-wrapper">
+                        {@html DiscordIcons.withColor(DiscordIcons.CALENDER, activeChannelId === 'EVENTS' ? 'var(--white)' : 'var(--secondary-text)')}
+                    </div>
+                    <p class="name">Events</p>
                 </div>
-                <p class="name">Events</p>
-            </div>
+            {/if}
+            {#if guild.features.includes('COMMUNITY')}
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <div class="guild-channel" on:click={() => setActiveChannelId(guild.id, 'BROWSE_CHANNELS')} class:active={activeChannelId === 'BROWSE_CHANNELS'}>
+                    <div class="icon-wrapper">
+                        {@html DiscordIcons.withColor(DiscordIcons.BROWSE, activeChannelId === 'BROWSE_CHANNELS' ? 'var(--white)' : 'var(--secondary-text)')}
+                    </div>
+                    <p class="name">Browse Channels</p>
+                </div>
+            {/if}
+            {#if PermissionUtils.hasAnyPermission(guild.permissions, [PermissionFlags.ADMINISTRATOR, PermissionFlags.MANAGE_GUILD, PermissionFlags.MANAGE_ROLES, PermissionFlags.MANAGE_NICKNAMES, PermissionFlags.MODERATE_MEMBERS, PermissionFlags.KICK_MEMBERS, PermissionFlags.BAN_MEMBERS])}
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <div class="guild-channel" on:click={() => setActiveChannelId(guild.id, 'MEMBERS')} class:active={activeChannelId === 'MEMBERS'}>
+                    <div class="icon-wrapper">
+                        {@html DiscordIcons.withColor(DiscordIcons.MEMBERS, activeChannelId === 'MEMBERS' ? 'var(--white)' : 'var(--secondary-text)')}
+                    </div>
+                    <p class="name">Members</p>
+                </div>
+            {/if}
             <!-- svelte-ignore element_invalid_self_closing_tag -->
             <div class="divider" />
             {#each standaloneChannels as channel}
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <div class="guild-channel" on:click={() => ACTIVE_CHANNEL_ID.set(channel.id)} class:active={$ACTIVE_CHANNEL_ID === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
+                <div class="guild-channel" on:click={() => setActiveChannelId(guild.id, channel.id)} class:active={activeChannelId === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
                     {#if channel.type === ChannelType.TEXT}
                         <div class="icon-wrapper">
-                            {@html DiscordIcons.withColor(channel.id === guild.rules_channel_id ? DiscordIcons.RULES : DiscordIcons.TEXT_CHANNEL, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                            {@html DiscordIcons.withColor(channel.id === guild.rules_channel_id ? DiscordIcons.RULES : DiscordIcons.TEXT_CHANNEL, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                         </div>
                     {:else if channel.type === ChannelType.VOICE}
                         <div class="icon-wrapper">
-                            {@html DiscordIcons.withColor(DiscordIcons.VOICE, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                            {@html DiscordIcons.withColor(DiscordIcons.VOICE, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                         </div>
                     {:else if channel.type === ChannelType.FORUM}
                         <div class="icon-wrapper">
-                            {@html DiscordIcons.withColor(DiscordIcons.FORUM, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                            {@html DiscordIcons.withColor(DiscordIcons.FORUM, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                         </div>
                     {:else if channel.type === ChannelType.NEWS}
                         <div class="icon-wrapper">
-                            {@html DiscordIcons.withColor(DiscordIcons.ANNOUNCEMENT, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                            {@html DiscordIcons.withColor(DiscordIcons.ANNOUNCEMENT, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                         </div>
                     {:else if channel.type === ChannelType.STAGE_VOICE}
                         <div class="icon-wrapper">
-                            {@html DiscordIcons.withColor(DiscordIcons.STAGE, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                            {@html DiscordIcons.withColor(DiscordIcons.STAGE, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                         </div>
                     {/if}
                     <p class="name">{channel.name}</p>
@@ -111,37 +135,37 @@
                     <!-- svelte-ignore a11y_no_static_element_interactions -->
                     <!-- svelte-ignore a11y_click_events_have_key_events -->
                     <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-                    <div class="header" on:click={() => openCategories.includes(category.id) ? openCategories = openCategories.filter(c => c !== category.id) : openCategories = [...openCategories, category.id]} on:mouseover={() => hoveredChannelId = category.id} on:mouseleave={() => hoveredChannelId = null}>
+                    <div class="header" on:click={() => closedCategories[guild.id]?.includes(category.id) ? closedCategories[guild.id] = closedCategories[guild.id]?.filter(c => c !== category.id) : closedCategories[guild.id] = [...closedCategories[guild.id] ?? [], category.id]} on:mouseover={() => hoveredChannelId = category.id} on:mouseleave={() => hoveredChannelId = null}>
                         <p class="name">{category.name}</p>
-                        <div class="icon-wrapper" class:open={openCategories.includes(category.id)}>
+                        <div class="icon-wrapper" class:open={!closedCategories[guild.id]?.includes(category.id)}>
                             {@html DiscordIcons.withColor(DiscordIcons.CHEVRON, hoveredChannelId === category.id ? 'var(--white)' : 'var(--secondary-text)')}
                         </div>
                     </div>
-                    <div class="children" class:open={openCategories.includes(category.id)}>
+                    <div class="children" class:open={!closedCategories[guild.id]?.includes(category.id)}>
                         {#each categoryChildChannels[category.id] as channel}
                             <!-- svelte-ignore a11y_click_events_have_key_events -->
                             <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                             <!-- svelte-ignore a11y_no_static_element_interactions -->
-                            <div class="guild-channel inside-category" on:click={() => ACTIVE_CHANNEL_ID.set(channel.id)} class:active={$ACTIVE_CHANNEL_ID === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
+                            <div class="guild-channel inside-category" on:click={() => setActiveChannelId(guild.id, channel.id)} class:active={activeChannelId === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
                                 {#if channel.type === ChannelType.TEXT}
                                     <div class="icon-wrapper">
-                                        {@html DiscordIcons.withColor(channel.id === guild.rules_channel_id ? DiscordIcons.RULES : DiscordIcons.TEXT_CHANNEL, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                                        {@html DiscordIcons.withColor(channel.id === guild.rules_channel_id ? DiscordIcons.RULES : DiscordIcons.TEXT_CHANNEL, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                                     </div>
                                 {:else if channel.type === ChannelType.VOICE}
                                     <div class="icon-wrapper">
-                                        {@html DiscordIcons.withColor(DiscordIcons.VOICE, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                                        {@html DiscordIcons.withColor(DiscordIcons.VOICE, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                                     </div>
                                 {:else if channel.type === ChannelType.FORUM}
                                     <div class="icon-wrapper">
-                                        {@html DiscordIcons.withColor(DiscordIcons.FORUM, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                                        {@html DiscordIcons.withColor(DiscordIcons.FORUM, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                                     </div>
                                 {:else if channel.type === ChannelType.NEWS}
                                     <div class="icon-wrapper">
-                                        {@html DiscordIcons.withColor(DiscordIcons.ANNOUNCEMENT, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                                        {@html DiscordIcons.withColor(DiscordIcons.ANNOUNCEMENT, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                                     </div>
                                 {:else if channel.type === ChannelType.STAGE_VOICE}
                                     <div class="icon-wrapper">
-                                        {@html DiscordIcons.withColor(DiscordIcons.STAGE, $ACTIVE_CHANNEL_ID === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
+                                        {@html DiscordIcons.withColor(DiscordIcons.STAGE, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
                                     </div>
                                 {/if}
                                 <p class="name">{channel.name}</p>
@@ -156,10 +180,11 @@
 
 <style>
     .guild-channel-list {
+        position: relative;
         display: flex;
         flex-direction: column;
         /* full width - guild sidebar */
-        width: calc(100% - 75px);
+        max-width: 100%;
         height: 100%;
     }
 
@@ -174,9 +199,8 @@
 
     .banner-header {
         display: flex;
-        width: calc(100% + 75px);
+        width: 100%;
         border-top-left-radius: 10px;
-        position: relative;
     }
 
     .banner-header .banner {
@@ -253,7 +277,7 @@
     .guild-channels {
         display: flex;
         flex-direction: column;
-        width: calc(100% + 75px);
+        width: 100%;
         height: 100%;
         overflow-y: scroll;
         overflow-x: hidden;
