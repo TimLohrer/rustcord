@@ -5,7 +5,7 @@
 	import GuildSidebar from './../lib/components/GuildSidebar.svelte';
 	import ActiveUserCard from './../lib/components/home/ActiveUserCard.svelte';
 	import { loadDebugToken, token_login } from "$lib/api/login";
-	import { ACTIVE_GUILD_ID, ACTIVE_USER, TOKEN, VOICE_SOUND_STATE, VOICE_STATE } from "$lib/stores/stateStore";
+	import { ACTIVE_GUILD_ID, ACTIVE_USER, TOKEN, VOICE_STATE } from "$lib/stores/stateStore";
 	import { onMount } from "svelte";
 	import { connectToGateway, handleGatewayEvent } from '$lib/api/gateway';
 	import { listen } from '@tauri-apps/api/event';

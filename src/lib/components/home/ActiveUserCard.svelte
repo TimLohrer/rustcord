@@ -17,11 +17,6 @@
             : DiscordIcons.withColor(DiscordIcons.DEAFEN, hexToRGBAString('var(--secondary-text)'))
         : DiscordIcons.withColor(DiscordIcons.DEAFENED, hexToRGBAString('var(--red)'));
 
-    $: settingsIcon =
-        settingsHovered
-            ? DiscordIcons.withColor(DiscordIcons.SETTINGS, 'white')
-            : DiscordIcons.withColor(DiscordIcons.SETTINGS, hexToRGBAString('var(--secondary-text)'));
-
     let muteHovered = false;
     let deafHovered = false;
     let settingsHovered = false;
@@ -195,7 +190,7 @@
                 {@html deafIcon}
             </div>
             <div class="button settings-button" on:click={openSettings} on:mouseover={settingsHover} on:mouseleave={settingsHoverEnd}>
-                {@html settingsIcon}
+                {@html DiscordIcons.withColor(DiscordIcons.SETTINGS, settingsHovered ? 'white' : hexToRGBAString('var(--secondary-text)'))}
             </div>
         </div>
     </div>
