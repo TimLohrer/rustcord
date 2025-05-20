@@ -1,1 +1,1 @@
-pub mod discord_api;
+pub(crate) mod discord_api;

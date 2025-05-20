@@ -1,8 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 pub mod api;
+pub mod gateway;
 
-use tauri::Manager;
+use gateway::gateway_dtos::Message;
+use gateway::gateway_messages::VoiceStateUpdateMessage;
+use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
 use lazy_static::lazy_static;
 use serde_json::Value;
@@ -10,12 +13,15 @@ use dotenv;
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
 
 use crate::api::discord_api::DiscordApi;
+use crate::gateway::gateway::GatewayConnection;
 
 pub const VERBOSE: bool = true;
+pub const VERBOSE_GATEWAY: bool = false;
 pub const BOT_USER: bool = false;
 
 lazy_static! {
     static ref TOKEN: Mutex<String> = Mutex::new(String::new());
+    static ref GATEWAY: Mutex<Option<GatewayConnection>> = Mutex::new(None);
 }
 
 #[tauri::command]
@@ -38,6 +44,68 @@ async fn discord_token_login(token: String) -> Result<Value, String> {
     }
     
     DiscordApi::login(DiscordApi::get_authorization_header(token, BOT_USER)).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn connect_to_gateway(token: String, app: AppHandle) -> Result<(), String> {
+    if VERBOSE {
+        println!("Called connect_to_gateway");
+    }
+    
+    let mut gateway = GatewayConnection::new(token.clone(), "10".to_string(), 131071);
+    match gateway.connect_to_gateway(app).await {
+        Ok(_) => {
+            let mut token = TOKEN.lock().await;
+            *token = token.clone();
+            drop(token);
+            let mut gateway_lock = GATEWAY.lock().await;
+            *gateway_lock = Some(gateway);
+            drop(gateway_lock);
+            Ok(())
+        },
+        Err(e) => Err(e.to_string())
+    }
+}
+
+#[tauri::command]
+async fn join_voice_channel(guild_id: String, channel_id: String, mute: bool, deaf: bool) -> Result<(), String> {
+    if VERBOSE {
+        println!("Called join_voice_channel");
+    }
+    
+    let gateway = GATEWAY.lock().await;
+    if let Some(gateway) = &*gateway {
+        let message = VoiceStateUpdateMessage {
+            guild_id,
+            channel_id: Some(channel_id),
+            self_mute: mute,
+            self_deaf: deaf,
+        };
+        println!("Sending message: {:?}", message.to_json().clone());
+        gateway.send_message(message.to_json()).await.map_err(|e| e.to_string())
+    } else {
+        Err("Gateway not initialized".to_string())
+    }
+}
+
+#[tauri::command]
+async fn leave_voice_channel(guild_id: String) -> Result<(), String> {
+    if VERBOSE {
+        println!("Called leave_voice_channel");
+    }
+    
+    let gateway = GATEWAY.lock().await;
+    if let Some(gateway) = &*gateway {
+        let message = VoiceStateUpdateMessage {
+            guild_id,
+            channel_id: None,
+            self_mute: false,
+            self_deaf: false,
+        };
+        gateway.send_message(message.to_json()).await.map_err(|e| e.to_string())
+    } else {
+        Err("Gateway not initialized".to_string())
+    }
 }
 
 #[tauri::command]
@@ -125,7 +193,12 @@ async fn main() {
             get_discord_guilds,
             get_discord_guild,
             get_discord_guild_channels,
-            get_discord_messages
+            get_discord_messages,
+
+            // Gateway commands
+            connect_to_gateway,
+            join_voice_channel,
+            leave_voice_channel
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

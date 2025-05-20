@@ -5,23 +5,22 @@
 	import GuildSidebar from './../lib/components/GuildSidebar.svelte';
 	import ActiveUserCard from './../lib/components/home/ActiveUserCard.svelte';
 	import { loadDebugToken, token_login } from "$lib/api/login";
-  	import { loadSettings } from "$lib/api/settings";
-	import { ACTIVE_GUILD_ID, ACTIVE_USER, TOKEN } from "$lib/stores/stateStore";
+	import { ACTIVE_GUILD_ID, ACTIVE_USER, TOKEN, VOICE_SOUND_STATE, VOICE_STATE } from "$lib/stores/stateStore";
 	import { onMount } from "svelte";
-  	import { loadGuilds } from '$lib/api/guilds';
-  	import { loadDMChannels } from '$lib/api/channels';
+	import { connectToGateway, handleGatewayEvent } from '$lib/api/gateway';
+	import { listen } from '@tauri-apps/api/event';
 
 	onMount(async () => {
+		listen('GATEWAY_EVENT', handleGatewayEvent);
+		
 		await loadDebugToken();
 
 		TOKEN.subscribe(async (newToken) => {
 			if (newToken) {
-				await token_login($TOKEN);
-				await loadSettings();
-				await loadDMChannels();
-				await loadGuilds();
+				await connectToGateway();
 			}
 		});
+
 	});
 </script>
 
@@ -33,7 +32,8 @@
 			</div>
 			<div class="app-content">
 				<div class="guild-and-dm-channel-list-wrapper">
-					<div class="lists-wrapper">
+					<!-- /* Incomming dynamic CSS: full height - active user card height - title bar height */ -->
+					<div class="lists-wrapper" style={`height: calc(100% - ${$VOICE_STATE !== null ? 215 : 75}px - 45px);`}>
 						<div class="guild-list">
 							<GuildSidebar />
 						</div>
@@ -47,7 +47,7 @@
 							</div>
 						{/if}
 					</div>
-					<div class="current-user-card">
+					<div class="current-user-card" style={`height: ${$VOICE_STATE !== null ? 215 : 75}px;`}>
 						<ActiveUserCard />
 					</div>
 				</div>
@@ -94,8 +94,6 @@
 	.lists-wrapper {
 		display: flex;
 		flex-direction: row;
-		/* full height - actuve user card height - title bar height */
-		height: calc(100% - 75px - 45px);
 	}
 
 	.guild-list {
@@ -127,7 +125,6 @@
 		display: flex;
 		/* full width - 10px both sides margin */
 		width: calc(100% - 20px);
-		height: 75px;
 		border: 1px solid var(--border-color);
 		border-radius: 10px;
 		margin: 0 10px 10px 10px;

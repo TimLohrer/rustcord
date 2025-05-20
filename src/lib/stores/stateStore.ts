@@ -1,18 +1,20 @@
 import { loadGuildChannels } from "$lib/api/channels";
 import { loadGuild } from "$lib/api/guilds";
+import type { VoiceState } from "$lib/types/voiceState";
 import { get, writable, type Writable } from "svelte/store";
 
 export const TOKEN = writable("");
+export const GATEWAY_SESSION_ID = writable(null);
 export const SETTINGS: Writable<null | any> = writable(null);
 export const ACTIVE_USER: Writable<null | any> = writable(null);
 export const ACTIVE_GUILD_ID = writable("HOME");
 export const ACTIVE_CHANNEL_ID: Writable<Record<string, string>> = writable({ "HOME": "HOME" });
 
-export const VOICE_STATE: Writable<'default' | 'mute' | 'deaf'> = writable('default');
-
-export const DM_CHANNELS: Writable<any[]> = writable([]);
+export const VOICE_STATE: Writable<VoiceState | null> = writable(null);
+export const VOICE_SOUND_STATE: Writable<'default' | 'mute' | 'deaf'> = writable('default');
 
 export const GUILDS: Writable<any[]> = writable([]);
+export const DM_CHANNELS: Writable<any[]> = writable([]);
 export const FRIENDS = writable([]);
 
 /// ----- State Logic ----- ///

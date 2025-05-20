@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { PermissionFlags, PermissionUtils } from './../../utils/permissionUtils';
-    import { ACTIVE_CHANNEL_ID, ACTIVE_GUILD_ID, GUILDS, setActiveChannelId } from "$lib/stores/stateStore";
+    import { ACTIVE_CHANNEL_ID, ACTIVE_GUILD_ID, GUILDS, setActiveChannelId, VOICE_STATE } from "$lib/stores/stateStore";
     import { ChannelType } from "$lib/types/channel";
     import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
     import { DiscordIcons } from "$lib/utils/iconUtils";
+  import { joinVoiceChannel, leaveVoiceChannel } from '$lib/api/gateway';
 
     let hoveredChannelId: string | null = null;
 
@@ -33,6 +34,16 @@
         }
         return categories;
     })();
+
+    async function handleChannelClick(channelType: ChannelType, channelId: string) {
+        setActiveChannelId(guild.id, channelId);
+
+        if (channelType === ChannelType.VOICE && ($VOICE_STATE === null || $VOICE_STATE?.channelId !== channelId)) {
+            await joinVoiceChannel(guild.id, channelId);
+        } else if (channelType === ChannelType.VOICE && $VOICE_STATE) {
+            await leaveVoiceChannel(guild.id);
+        }
+    }
 </script>
 
 <div class="guild-channel-list">
@@ -105,7 +116,7 @@
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <div class="guild-channel" on:click={() => setActiveChannelId(guild.id, channel.id)} class:active={activeChannelId === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
+                <div class="guild-channel" on:click={() => handleChannelClick(channel.type as ChannelType, channel.id)} class:active={activeChannelId === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
                     {#if channel.type === ChannelType.TEXT}
                         <div class="icon-wrapper">
                             {@html DiscordIcons.withColor(channel.id === guild.rules_channel_id ? DiscordIcons.RULES : DiscordIcons.TEXT_CHANNEL, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
@@ -146,7 +157,7 @@
                             <!-- svelte-ignore a11y_click_events_have_key_events -->
                             <!-- svelte-ignore a11y_mouse_events_have_key_events -->
                             <!-- svelte-ignore a11y_no_static_element_interactions -->
-                            <div class="guild-channel inside-category" on:click={() => setActiveChannelId(guild.id, channel.id)} class:active={activeChannelId === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
+                            <div class="guild-channel inside-category" on:click={() => handleChannelClick(channel.type as ChannelType, channel.id)} class:active={activeChannelId === channel.id} on:mouseover={() => hoveredChannelId = channel.id} on:mouseleave={() => hoveredChannelId = null}>
                                 {#if channel.type === ChannelType.TEXT}
                                     <div class="icon-wrapper">
                                         {@html DiscordIcons.withColor(channel.id === guild.rules_channel_id ? DiscordIcons.RULES : DiscordIcons.TEXT_CHANNEL, activeChannelId === channel.id ? 'var(--white)' : 'var(--secondary-text)')}
