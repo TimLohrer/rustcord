@@ -1,6 +1,5 @@
 <script lang="ts">
     import { ACTIVE_CHANNEL_ID, ACTIVE_GUILD_ID, GUILDS } from "$lib/stores/stateStore";
-    import DiscordLogo from '$lib/assets/logo_white.png';
     import { DiscordAssetUtils } from "$lib/utils/discordAssetUtils";
     import { DiscordIcons } from "$lib/utils/iconUtils";
 
@@ -12,12 +11,12 @@
 <div class="title-bar" data-tauri-drag-region>
     <div class="active-guild" data-tauri-drag-region>
         {#if $ACTIVE_GUILD_ID === 'HOME'}
-            {#if $ACTIVE_CHANNEL_ID === 'HOME'}
+            {#if $ACTIVE_CHANNEL_ID['HOME'] === 'HOME'}
                 <div class="icon">
                     {@html DiscordIcons.withColor(DiscordIcons.HOME, 'var(--secondary-text)')}
                 </div>
                 <p data-tauri-drag-region>Home</p>    
-            {:else if $ACTIVE_CHANNEL_ID === 'FRIENDS'}
+            {:else if $ACTIVE_CHANNEL_ID['HOME'] === 'FRIENDS'}
                 <div class="icon">
                     {@html DiscordIcons.withColor(DiscordIcons.FRIENDS, 'var(--secondary-text)')}
                 </div>
